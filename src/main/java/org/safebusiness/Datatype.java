@@ -17,8 +17,19 @@ public class Datatype {
 	
 	public static final String DATE = "java.util.Date";
 	
+	// TODO add support for coded types
+	public static final String CODED = "org.safebusiness.Concept";
+	
 	// This is the dataType selected for a given attribute
 	private String value = null;
+	
+	public Datatype() {
+		
+	}
+	
+	public Datatype(String value) {
+		this.value = value;
+	}
 	
 	public List<String> getSupportedDatatypes() {
 		return Arrays.asList(INTEGER, TEXT, FILE, DATE);

@@ -44,9 +44,9 @@ public abstract class Attribute {
 		switch(dataType.getValue()) {
 		
 		 case Datatype.TEXT :
-			return dataType.getValue();
+			return value.toString();
 		 case Datatype.INTEGER :
-			return Integer.valueOf(dataType.getValue());
+			return Integer.valueOf(value.toString());
 		 case Datatype.DATE:
 			 // TODO Should parse date in correct format from the web
 			 return null;

@@ -18,14 +18,12 @@ public class ActionAttributeTest {
 	
 	private Action action;
 	private List<String> instructions;
-	private Datatype datatype;
 	
 	@Before
 	public void setup() {
 		action = new Action();
-		datatype = new Datatype();
 		// Some instructions
-		instructions = Arrays.asList("Provide Laywer's full Name", "Provide LC-IV Phone number");
+		instructions = Arrays.asList("Provide Laywer's full Name", "Provide LC-IV Phone number", "Provide your age");
 		action.setInstructions(instructions);
 		
 	}
@@ -37,21 +35,27 @@ public class ActionAttributeTest {
 		// Create attributes to collect info for given instructions
 		Attribute lawyerzName = new ActionAttribute();
 		lawyerzName.setName("Lawyers name");
-		datatype.setValue(Datatype.TEXT);
-		lawyerzName.setDataType(datatype);
+		lawyerzName.setDataType(new Datatype(Datatype.TEXT));
 		lawyerzName.setValue("Smith Doe");
 		Attribute lc5PhoneNum = new ActionAttribute();
-		datatype.setValue(Datatype.TEXT);
 		lc5PhoneNum.setName("LC-IV Phone number");
-		lc5PhoneNum.setDataType(datatype);
+		lc5PhoneNum.setDataType(new Datatype(Datatype.TEXT));
 		lc5PhoneNum.setValue("256773437821");
+		Attribute age = new ActionAttribute();
+		age.setName("Age");
+		age.setDataType(new Datatype(Datatype.INTEGER));
+		age.setValue(45);
 		action.addAttribute(lawyerzName);
 		action.addAttribute(lc5PhoneNum);
+		action.addAttribute(age);
 		
 		// assert
 		assertTrue(action.hasAttributes());
-		assertEquals(2, action.getAttributes().size());
+		assertEquals(3, action.getAttributes().size());
 		assertEquals("Smith Doe", lawyerzName.getValue());
-		
+		assertEquals("256773437821", lc5PhoneNum.getValue());
+		assertEquals(45, age.getValue());
+		// should return equivalent string
+		assertEquals("45", age.getValueText());
 	}
 }
