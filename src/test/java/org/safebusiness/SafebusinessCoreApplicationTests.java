@@ -1,4 +1,4 @@
-package org.safebusiness.safebusinesscore;
+package org.safebusiness;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
