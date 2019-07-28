@@ -2,10 +2,32 @@ package org.safebusiness;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+@Entity
 public class Procedure {
 	
+	@Id
+	@GeneratedValue
+	@Column(name="procedure_id")
+	private Integer id;
+	@OneToMany(mappedBy="procedure")
     private List<Act> acts;
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "action_id", referencedColumnName = "action_id")
 	private Action action;
+	// Process owning this Procedure
+	@ManyToOne
+    @JoinColumn(name="process_id", nullable=false)
+	private Process process;
 	
 	// Getters and Setters
 	public List<Act> getActs() {
@@ -20,6 +42,11 @@ public class Procedure {
 	public void setAction(Action action) {
 		this.action = action;
 	}
-	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 }

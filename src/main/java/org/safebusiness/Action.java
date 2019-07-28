@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 
 @Entity
@@ -26,6 +27,9 @@ public class Action implements Customizable<ActionAttribute> {
 	private List<String> instructions;
 	@OneToMany(mappedBy="action")
 	private List<ActionAttribute> attributes;
+	// Procedure owning this Action
+	@OneToOne(mappedBy = "action")
+	private Procedure procedure;
 			
 	@Override
 	public void addAttribute(ActionAttribute attribute) {
