@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
  * User CRUD methods
  * @author Kinene
  */
-public interface UserRepositotry extends CrudRepository<User, Integer> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 
 }
