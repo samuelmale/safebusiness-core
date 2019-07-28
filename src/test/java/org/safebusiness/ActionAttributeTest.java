@@ -8,13 +8,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ActionAttributeTest {
+public class ActionAttributeTest extends RegressionTestHelper {
 	
 	private Action action;
 	private List<String> instructions;
@@ -33,18 +28,10 @@ public class ActionAttributeTest {
 		// setup
 		
 		// Create attributes to collect info for given instructions
-		Attribute lawyerzName = new ActionAttribute();
-		lawyerzName.setName("Lawyers name");
-		lawyerzName.setDataType(new Datatype(Datatype.TEXT));
-		lawyerzName.setValue("Smith Doe");
-		Attribute lc5PhoneNum = new ActionAttribute();
-		lc5PhoneNum.setName("LC-IV Phone number");
-		lc5PhoneNum.setDataType(new Datatype(Datatype.TEXT));
-		lc5PhoneNum.setValue("256773437821");
-		Attribute age = new ActionAttribute();
-		age.setName("Age");
-		age.setDataType(new Datatype(Datatype.INTEGER));
-		age.setValue(45);
+		ActionAttribute lawyerzName = createActionAttribute(Datatype.TEXT, "Lawyers name", "Smith Doe");
+		ActionAttribute lc5PhoneNum = createActionAttribute(Datatype.TEXT, "LC-IV Phone number", "256773437821");
+		ActionAttribute age = createActionAttribute(Datatype.INTEGER, "Age", 45);
+		
 		action.addAttribute(lawyerzName);
 		action.addAttribute(lc5PhoneNum);
 		action.addAttribute(age);

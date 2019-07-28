@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * A Concept is anything in safebusiness.
- * This could a question or an answer to a question.
+ * This could be a question or an answer to a question.
  * @author samuel
  *
  */

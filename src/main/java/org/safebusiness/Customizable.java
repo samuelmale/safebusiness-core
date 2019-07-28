@@ -7,17 +7,17 @@ import java.util.Collection;
  * @author samuel
  *
  */
-public interface Customizable {
+public interface Customizable<A extends Attribute> {
 	
 	/**
 	 * @return all attributes
 	 */
-	Collection<Attribute> getAttributes();
+	Collection<A> getAttributes();
 	
 	/**
 	 * Adds an attribute.
 	 * 
 	 * @param attribute
 	 */
-	void addAttribute(Attribute attribute);
+	void addAttribute(A attribute);
 }
