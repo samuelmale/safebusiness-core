@@ -1,0 +1,14 @@
+<head>
+<!-- Add CSS files -->
+</head>
+
+<body>
+	<!--header.html -->
+   <div th:replace="fragments/header :: header"></div>
+
+   <!-- Should be filled by `layout:fragment="content"` -->
+   <div layout:fragment="content"></div>
+   
+	<!--footer.html -->
+   <div th:replace="fragments/footer :: footer"></div>
+</body>
