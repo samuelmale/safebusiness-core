@@ -29,6 +29,8 @@ public class Article {
     @JoinColumn(name="section_id", nullable=false)
 	private Section section;
 	
+	private Integer number;
+	
 	public Integer getId() {
 		return id;
 	}

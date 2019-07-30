@@ -20,6 +20,8 @@ public class Act {
 	@OneToMany(mappedBy="act")
 	private List<Section> sections;
 	
+	private String name;
+	
 	// Procedure owning this Act
 	@ManyToOne
     @JoinColumn(name="procedure_id", nullable=false)
