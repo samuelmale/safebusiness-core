@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class Section {
@@ -36,7 +37,13 @@ public class Section {
 	@ManyToOne
     @JoinColumn(name="act_id", nullable=true)
 	private Act act;
-
+	
+	@Transient
+	private Integer actId;
+	
+	@Transient
+	private String childrenCommaSeparatedList;
+	
 	// Getters and Setters
 	public Integer getId() {
 		return id;
@@ -67,6 +74,25 @@ public class Section {
 	}
 	public void setParent(Section parent) {
 		this.parent = parent;
+	}
+	
+	public Act getAct() {
+		return act;
+	}
+	public void setAct(Act act) {
+		this.act = act;
+	}
+	public String getChildrenCommaSeparatedList() {
+		return childrenCommaSeparatedList;
+	}
+	public void setChildrenCommaSeparatedList(String childrenCommaSeparatedList) {
+		this.childrenCommaSeparatedList = childrenCommaSeparatedList;
+	}
+	public Integer getActId() {
+		return actId;
+	}
+	public void setActId(Integer actId) {
+		this.actId = actId;
 	}
 	
 }

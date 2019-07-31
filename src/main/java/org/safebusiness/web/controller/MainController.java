@@ -1,14 +1,16 @@
 package org.safebusiness.web.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.safebusiness.Act;
 import org.safebusiness.Article;
+import org.safebusiness.Section;
 import org.safebusiness.api.repo.ArticleRepository;
+import org.safebusiness.api.repo.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,8 @@ public class MainController {
 
 	@Autowired
 	ArticleRepository articleRepo;
+	@Autowired
+	SectionRepository sectionRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index() {
@@ -87,4 +91,42 @@ public class MainController {
 		}
 		return ret;
 	}
+		
+	@GetMapping("safebusiness/newSection")
+	public String newSection(Model model) {
+		model.addAttribute("section", new Section());
+		return "addSection";
+	}
+	
+	@PostMapping("addSection")
+	public String addSection(@Valid Section section) {
+		Integer actId = section.getActId();
+		if(actId != null) {
+			Act act = new Act();
+			act.setId(actId);
+		}else {
+			section.setAct(null);
+		}
+		sectionRepo.save(section);
+		return "redirect:safebusiness/index";
+	}
+	
+	private List<Section> parseSectionString(String val) {
+		List<Section> sec = new ArrayList<>();
+		String[] stringIds = val.split(",");
+
+		for (String id : stringIds) {
+			// Lookup the Section
+			try {
+				if (sectionRepo.findById(Integer.parseInt(id)).isPresent()) {
+					sec.add(sectionRepo.findById(Integer.parseInt(id)).get());	
+				}
+			} catch(NumberFormatException ex) {
+				// Ignore..
+			}
+		}
+		return sec;
+	}
+	
+	
 }

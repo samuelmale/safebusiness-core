@@ -1,0 +1,37 @@
+<div th:fragment="newSection">
+	<form action="#" th:action="@{/addSection}" th:object="${section}" method="post" id="sb-new-section">
+		<h4>New Section</h4>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="number">Section Name:</label>
+				
+				<input type="text" th:field="*{name}" placeholder="Section Name" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="actid">ActID:</label>
+				
+				<input type="number" th:field="*{actId}" placeholder="ActID" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="child-sections">Add child sections:</label>
+				<input type="text" id="child-sectionss" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child section's numbers" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div>
+			  <button type="button" class="btn btn-danger">Cancel</button>
+			  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+			</div>
+
+		</div>
+	</form>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-section').submit();
+		});
+	</script>
+</div>
