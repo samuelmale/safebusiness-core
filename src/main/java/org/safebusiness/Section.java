@@ -38,6 +38,11 @@ public class Section {
     @JoinColumn(name="act_id", nullable=true)
 	private Act act;
 	
+	//This a hack around having this @id in String format
+	// I hate casting in thymeleafe templates
+	@Column
+	private String stringId;
+	
 	@Transient
 	private Integer actId;
 	
@@ -45,12 +50,6 @@ public class Section {
 	private String childrenCommaSeparatedList;
 	
 	// Getters and Setters
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}
@@ -93,6 +92,25 @@ public class Section {
 	}
 	public void setActId(Integer actId) {
 		this.actId = actId;
+	}
+	public String getStringId() {
+		return stringId;
+	}
+	public void setStringId(String stringId) {
+		this.stringId = stringId;
+	}
+	public Integer getId() {
+		if(id != null) {
+			this.stringId = id.toString();
+		}
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		if (id != null) {
+			setStringId(id.toString());
+		}
+		this.id = id;
 	}
 	
 }

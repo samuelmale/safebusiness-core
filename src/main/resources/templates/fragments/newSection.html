@@ -1,9 +1,8 @@
 <div th:fragment="newSection">
-	<form action="#" th:action="@{/addSection}" th:object="${section}" method="post" id="sb-new-section">
-		<h4>New Section</h4>
+	<form action="#" th:action="@{/safebusiness/addSection/{string}(string=${section.stringId} == null ? 'new' : ${section.stringId})}" th:object="${section}" method="post" id="sb-new-section">
 		<div class="form-row">
 			<div class="form-group col-sm-6">
-				<label for="number">Section Name:</label>
+				<label for="name">Section Name:</label>
 				
 				<input type="text" th:field="*{name}" placeholder="Section Name" class="form-control" />
 			</div>

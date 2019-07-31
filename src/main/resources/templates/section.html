@@ -9,6 +9,8 @@
 			<div id="content">
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
+					<h4 th:if="${inViewMode} == true">Section Name : <span th:utext="${section.name}"></span></h4>
+					<h4 th:unless="${inViewMode} == true">New Section</h4>
 					<div th:insert="fragments/newSection.html :: newSection"></div>
 				</div>
 			</div>
