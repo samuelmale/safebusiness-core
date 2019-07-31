@@ -3,12 +3,17 @@ package org.safebusiness.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.safebusiness.Act;
+import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
+import org.safebusiness.Datatype;
 import org.safebusiness.Section;
+import org.safebusiness.api.APIUtils;
+import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ArticleRepository;
 import org.safebusiness.api.repo.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,8 @@ public class MainController {
 	ArticleRepository articleRepo;
 	@Autowired
 	SectionRepository sectionRepo;
+	@Autowired
+	ActionAttributeRepository attributeRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index() {
@@ -62,7 +69,10 @@ public class MainController {
 	
 	@PostMapping("addArticle")
 	public String addArticle(@Valid Article article) {
-		articleRepo.save(article);
+		Article savedArticle = articleRepo.save(article);
+		if (savedArticle != null) {
+			return "redirect:safebusiness/article/" + savedArticle.getId();
+		}
 		return "redirect:safebusiness/index";
 	}
 	
@@ -75,6 +85,14 @@ public class MainController {
 		return "listArticles";
 	}
 	
+	@GetMapping("safebusiness/listAttributes")
+	public String listAttributes(Model model) {
+		Iterable<ActionAttribute> interator = attributeRepo.findAll();
+		@SuppressWarnings("unchecked")
+		List<ActionAttribute> attributes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("attributes", attributes);
+		return "listAttributes";
+	}
 	private List<Article> parseArticleString(String val) {
 		List<Article> ret = new ArrayList<>();
 		String[] stringIds = val.split(",");
@@ -111,6 +129,81 @@ public class MainController {
 		return "redirect:safebusiness/index";
 	}
 	
+	@GetMapping("safebusiness/attribute/{id}")
+	public String createOrViewAttribute(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				ActionAttribute actionAtt = APIUtils.getActionAttributeById(Integer.parseInt(id), attributeRepo.findAll());
+				if (actionAtt != null) {
+					model.addAttribute("attribute", actionAtt);
+					model.addAttribute("inViewMode", true);
+					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("attribute", new ActionAttribute());
+					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("attribute", new ActionAttribute());
+				model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("attribute", new ActionAttribute());
+			model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "attribute";
+	}
+	
+	@PostMapping("safebusiness/addAttribute/{string}")
+	public String addAttribute(@Valid ActionAttribute attribute, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			attribute.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		ActionAttribute savedAttribute = attributeRepo.save(attribute);
+		if (savedAttribute != null) {
+			return "redirect:viewAttribute/" + savedAttribute.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	// Another hack around here
+	@GetMapping("safebusiness/addAttribute/viewAttribute/{id}")
+	public String viewAttributeDuplicateHandler(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				ActionAttribute actionAtt = APIUtils.getActionAttributeById(Integer.parseInt(id), attributeRepo.findAll());
+				if (actionAtt != null) {
+					model.addAttribute("attribute", actionAtt);
+					model.addAttribute("inViewMode", true);
+					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("attribute", new ActionAttribute());
+					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("attribute", new ActionAttribute());
+				model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("attribute", new ActionAttribute());
+			model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "attribute";
+	}
 	private List<Section> parseSectionString(String val) {
 		List<Section> sec = new ArrayList<>();
 		String[] stringIds = val.split(",");

@@ -48,6 +48,27 @@ public class ActionAttributeRepositoryTest extends RegressionTestHelper {
 	}
 	
 	@Test
+	public void save_shouldSaveAttributeWithoutAction() {
+		// replay
+		attribute.setAction(null);
+		ActionAttribute savedAttribute = actionAttributeRepo.save(attribute);
+		
+		// verify
+		assertNotNull(savedAttribute);
+		assertNotNull(savedAttribute.getId());
+	}
+	
+	@Test
+	public void findById_shouldGetAttribute() {
+		attribute.setAction(null);
+		attribute.setId(null);
+		Integer id = actionAttributeRepo.save(attribute).getId();
+		
+		// verify
+		assertTrue(actionAttributeRepo.findById(id).isPresent());
+	}
+	
+	@Test
 	public void delete_shouldDeleteExistingAttribute() {
 		// setup
 		ActionAttribute savedAttribute = actionAttributeRepo.save(attribute);

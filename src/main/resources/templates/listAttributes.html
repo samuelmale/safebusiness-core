@@ -1,0 +1,34 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<div id="" class="container">
+						<div th:if="${#lists.isEmpty(attributes)}">
+							No Available attributes
+						</div>
+						<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
+							<ul class="list-group">
+							  <li class="list-group-item" th:each="article : ${articles}">
+							  	<a th:href="@{attribute/{action}(action=${attribute.id})}"><span th:utext="${attribute.name}"></span></a>
+							  </li>
+							</ul>
+							
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- Footer -->
+			<div th:insert="fragments/footer.html :: footer"></div>
+		</div>
+		
+	</div>
+	
+</body>

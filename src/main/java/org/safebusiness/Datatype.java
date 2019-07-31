@@ -31,7 +31,7 @@ public class Datatype {
 		this.value = value;
 	}
 	
-	public List<String> getSupportedDatatypes() {
+	public static List<String> getSupportedDatatypes() {
 		return Arrays.asList(INTEGER, TEXT, FILE, DATE);
 	}
 	
