@@ -16,7 +16,7 @@ public class Section {
 	@Id
 	@GeneratedValue
 	@Column(name="section_id")
-	private String id; 
+	private Integer id; 
 	// Could be the title, not sure?
 	@Column
 	private String name; 
@@ -34,14 +34,14 @@ public class Section {
 	private Section parent;
 	// The Act owning this section
 	@ManyToOne
-    @JoinColumn(name="act_id", nullable=false)
+    @JoinColumn(name="act_id", nullable=true)
 	private Act act;
 
 	// Getters and Setters
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
