@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 public class ActionAttribute extends Attribute {
 	
 	@ManyToOne
-    @JoinColumn(name="action_id", nullable=false)
+    @JoinColumn(name="action_id", nullable=true)
 	private Action action;
 	
 	public Action getAction() {

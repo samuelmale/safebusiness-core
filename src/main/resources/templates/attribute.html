@@ -1,0 +1,80 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4 th:if="${inViewMode} == true"><span th:utext="${attribute.name}"></span></h4>
+					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
+					<div>
+						
+						<form action="#" th:action="@{/safebusiness/addAttribute/{string}(string=${attribute.stringId} == null ? 'new' : ${attribute.stringId})}" th:object="${attribute}" method="post" id="sb-new-attribute">
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="number">Attribute Name:</label>
+									
+									<input type="text" th:field="*{name}" placeholder="Name" class="form-control" />
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="article-value">Data type:</label>
+									<select th:field="*{dataTypeString}" class="form-control">
+									    <option th:each="type : ${dataTypes}" th:value="${type}" th:text="${type}" ></option>
+									</select>
+								</div>
+							</div>
+							<!-- During creation of the Attribute, we can't add attribute -->
+							<!-- Should apply while in view mode -->
+							<div th:if="${inViewMode} == true" class="form-row">
+								<div th:switch="${attribute.dataTypeString}">
+								<div th:case="'java.lang.String'">
+									<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+									<input type="text" th:field="*{text}" placeholder="Value" class="form-control" />
+									
+								</div>
+								<div th:case="'java.lang.Integer'">
+									<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+									<input type="number" th:field="*{valueInt}" placeholder="Value" class="form-control" />
+								</div>
+								<div th:case="'java.util.File'">
+									<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+									<input type="file" th:field="*{value}" class="form-control" />
+								</div>
+								<div th:case="'java.util.Date'">
+									<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+									<input type="date" th:field="*{valueDate}" placeholder="Value" class="form-control" />
+								</div>
+								<br/>
+							</div>
+							</div>
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+					
+							</div>
+						</form>
+						
+					</div>
+				</div>
+			</div>
+			<!-- Footer -->
+			<div th:insert="fragments/footer.html :: footer"></div>
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-attribute').submit();
+		});
+	</script>
+	
+	
+</body>
