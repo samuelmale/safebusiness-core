@@ -1,7 +1,36 @@
 <div th:fragment="newArticle">
-	<form action="">
+	<form action="#" th:action="@{/addArticle}" th:object="${article}" method="post" id="sb-new-article">
 		<h4>New Article</h4>
-		<textarea name="article-value" rows="10" cols="30" placeholder="Add Article"></textarea>
-		
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="number">Article Number:</label>
+				
+				<input type="number" th:field="*{articleNumber}" placeholder="Article Number" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="article-value">Article:</label>
+				<textarea name="article-value" th:field="*{value}" placeholder="Add Article" class="form-control" rows="5"></textarea>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="child-articles">Add child articles:</label>
+				<input type="text" id="child-articles" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child article's numbers" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div>
+			  <button type="button" class="btn btn-danger">Cancel</button>
+			  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+			</div>
+
+		</div>
 	</form>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-article').submit();
+		});
+	</script>
 </div>

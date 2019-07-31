@@ -1,14 +1,18 @@
-<head>
-<!-- Add CSS files -->
-</head>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<body>
-	<!--header.html -->
-   <div th:replace="fragments/header :: header"></div>
-
-   <!-- Should be filled by `layout:fragment="content"` -->
-   <div layout:fragment="content"></div>
+<body class id="page-top">
    
-	<!--footer.html -->
-   <div th:replace="fragments/footer :: footer"></div>
+   <div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:replace="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div th:replace="fragments/header.html :: header"></div>
+			<div layout:fragment="content"></div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<div th:replace="fragments/footer.html :: footer"></div>
 </body>

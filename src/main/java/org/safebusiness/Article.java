@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class Article {
@@ -26,10 +27,12 @@ public class Article {
 	private Article parent;
 	// Section where this article falls
 	@ManyToOne
-    @JoinColumn(name="section_id", nullable=false)
+    @JoinColumn(name="section_id", nullable=true)
 	private Section section;
-	
-	private Integer number;
+	@Column(unique=true)
+	private Integer articleNumber;
+	@Transient
+	private String childrenCommaSeparatedList;
 	
 	public Integer getId() {
 		return id;
@@ -69,6 +72,22 @@ public class Article {
 
 	public void setSection(Section section) {
 		this.section = section;
+	}
+
+	public String getChildrenCommaSeparatedList() {
+		return childrenCommaSeparatedList;
+	}
+
+	public void setChildrenCommaSeparatedList(String childrenCommaSeparatedList) {
+		this.childrenCommaSeparatedList = childrenCommaSeparatedList;
+	}
+
+	public Integer getArticleNumber() {
+		return articleNumber;
+	}
+
+	public void setArticleNumber(Integer articleNumber) {
+		this.articleNumber = articleNumber;
 	}	
 	
 }
