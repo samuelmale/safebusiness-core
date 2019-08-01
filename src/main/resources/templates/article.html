@@ -11,6 +11,12 @@
 				<div class="container-fluid">
 					<h4 th:if="${inViewMode} == true">Article Number : <span th:utext="${article.articleNumber}"></span></h4>
 					<h4 th:unless="${inViewMode} == true">New Article</h4>
+					<div th:if="${inViewMode} == true">
+						<br/>
+						<h6>Child Articles:</h6>
+						<div th:insert="fragments/listArticles.html :: listarticles"></div>
+						<br/>
+					</div>
 					<div th:insert="fragments/newArticle.html :: newArticle"></div>
 				</div>
 			</div>

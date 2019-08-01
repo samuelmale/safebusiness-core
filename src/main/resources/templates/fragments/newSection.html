@@ -17,7 +17,25 @@
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label for="child-sections">Add child sections:</label>
-				<input type="text" id="child-sectionss" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child section's numbers" class="form-control" />
+				<input type="text" id="child-sectionss" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child section's names" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="child-sections">Add Articles:</label>
+				<input type="text"  th:field="*{articleCommaSeparatedList}" placeholder="Comma seperated list of articles numbers" class="form-control" />
+			</div>
+		</div>
+		<div class="form-row" th:if="${inViewMode} == true">
+			<div class="form-group col-sm-6">
+				<label for="child-sections">Articles:</label>
+				<div th:insert="fragments/listArticles.html :: listarticles"></div>
+			</div>
+		</div>
+		<div class="form-row" th:if="${inViewMode} == true">
+			<div class="form-group col-sm-6">
+				<label for="child-sections">Subsections:</label>
+				<div th:insert="fragments/listSections.html :: listsections"></div>
 			</div>
 		</div>
 		<div class="form-row">

@@ -108,12 +108,44 @@ public class APIUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static List<Article> parseArticleString(String val, ArticleRepository articleRepo) {
-		return careFullyCastIterableToList(articleRepo.findAllById(parseStringToIntegerList(val)));	
+		List<Article> ret = new ArrayList<>();
+//		List<Article> existingArticles = careFullyCastIterableToList(articleRepo.getAll());
+//		for(Integer num : parseStringToIntegerList(val)) {
+//			for (Article candidate : existingArticles) {
+//				if (candidate.getArticleNumber() == num) {
+//					ret.add(candidate);
+//					break;
+//				}
+//				
+//			}
+//		}
+		for (Integer num : parseStringToIntegerList(val)) {
+			ret.add(articleRepo.findByNumber(num));
+		}
+		return ret;	
 	}
 
 	@SuppressWarnings("unchecked")
 	public static  List<Section> parseSectionString(String val, SectionRepository sectionRepo) {
-		return careFullyCastIterableToList(sectionRepo.findAllById(parseStringToIntegerList(val)));
+		List<Section> ret = new ArrayList<>();
+		if (val == null || sectionRepo == null) {
+			return ret;
+		}
+		if (val.isEmpty()) {
+			return ret;
+		}
+		List<Section> existingSections = careFullyCastIterableToList(sectionRepo.findAll());
+		String [] names = val.split(",");
+		for(String name : names) {
+			for (Section candidate : existingSections) {
+				if (candidate.getName().equalsIgnoreCase(name)) {
+					ret.add(candidate);
+					break;
+				}
+				
+			}
+		}
+		return ret;
 	}
 
 	public static List<Integer> parseStringToIntegerList(String val) {

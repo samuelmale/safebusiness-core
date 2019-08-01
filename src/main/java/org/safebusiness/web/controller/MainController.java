@@ -56,8 +56,14 @@ public class MainController {
 		if (id != null) {
 			try {
 				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
-					model.addAttribute("article", articleRepo.findById(Integer.parseInt(id)).get());
+					Article article = articleRepo.findById(Integer.parseInt(id)).get();
+					// Hack around to have `stringId` initialized
+					// Tired of writing dirty code :-(
+					article.getId();
+					model.addAttribute("article", article);
 					model.addAttribute("inViewMode", true);
+					// children
+					model.addAttribute("articles", article.getChildArticles() != null ? article.getChildArticles() : new ArrayList<>());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("article", new Article());
@@ -80,8 +86,14 @@ public class MainController {
 		if (id != null) {
 			try {
 				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
-					model.addAttribute("article", articleRepo.findById(Integer.parseInt(id)).get());
+					Article article = articleRepo.findById(Integer.parseInt(id)).get();
+					// Hack around to have `stringId` initialized
+					// Tired of writing dirty code :-(
+					article.getId();
+					model.addAttribute("article", article);
 					model.addAttribute("inViewMode", true);
+					// children
+					model.addAttribute("articles", article.getChildArticles() != null ? article.getChildArticles() : new ArrayList<>());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("article", new Article());
@@ -110,6 +122,9 @@ public class MainController {
 			// chill, stuff happens.
 		}
 		List<Article> children = APIUtils.parseArticleString(article.getChildrenCommaSeparatedList(), articleRepo);
+		for (Article child : children) {
+			child.setParent(article);
+		}
 		article.setChildArticles(children);
 		Article savedArticle = articleRepo.save(article);
 		if (savedArticle != null) {
@@ -226,8 +241,12 @@ public class MainController {
 			try {
 				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
 				if (section != null) {
-					model.addAttribute("section", sectionRepo.findById(Integer.parseInt(id)).get());
+					Section sec = sectionRepo.findById(Integer.parseInt(id)).get();
+					model.addAttribute("section", sec);
 					model.addAttribute("inViewMode", true);
+					model.addAttribute("articles", sec.getArticles() != null ? sec.getArticles() : new ArrayList<>());
+					model.addAttribute("sections", sec.getSubSections() != null ? sec.getSubSections() : new ArrayList<>());
+					
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("section", new Section());
@@ -255,6 +274,16 @@ public class MainController {
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
 		}
+		List<Article> articles = APIUtils.parseArticleString(section.getArticleCommaSeparatedList(), articleRepo);
+		for (Article article : articles) {
+			article.setSection(section);
+		}
+		section.setArticles(articles);
+		List<Section> subSecs = APIUtils.parseSectionString(section.getArticleCommaSeparatedList(), sectionRepo);
+		for (Section sec : subSecs) {
+			sec.setParent(section);
+		}
+		section.setSubSections(subSecs);
 		Section savedSection = sectionRepo.save(section);
 		if (savedSection != null) {
 			return "redirect:viewSection/" + savedSection.getId();
