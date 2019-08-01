@@ -5,14 +5,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.apache.commons.collections.IteratorUtils;
-
+import org.safebusiness.Act;
 import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.Datatype;
 import org.safebusiness.Section;
 import org.safebusiness.api.APIUtils;
-
+import org.safebusiness.api.repo.ActRepository;
 import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ActionRepository;
 import org.safebusiness.api.repo.ArticleRepository;
@@ -35,6 +35,8 @@ public class MainController {
 	ActionAttributeRepository attributeRepo;
 	@Autowired
 	ActionRepository actionRepo;
+	@Autowired
+	ActRepository actRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index() {
@@ -270,7 +272,7 @@ public class MainController {
 	}
 		
 	@GetMapping("safebusiness/addSection/viewSection/{id}")
-	public String ViewSectionDuplicateHandler(Model model, @PathVariable("id") String id) {
+	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id) {
 		if (id != null) {
 			try {
 				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
@@ -306,7 +308,6 @@ public class MainController {
 		model.addAttribute("actions", actions);
 		return "listAction";
 	}
-	
 	@GetMapping("safebusiness/action/{id}")
 	public String createOrViewAction(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -333,17 +334,17 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addAction/{string}")
-	public String addAction(@Valid Action action, @PathVariable("string") String routeAction, HttpServletResponse httpResponse) {
+	public String addAction(@Valid Action actions, @PathVariable("string") String action, HttpServletResponse httpResponse) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
-			action.setId(Integer.parseInt(routeAction));
+			actions.setId(Integer.parseInt(action));
 						
 		} catch(NumberFormatException ex) {
 			ex.printStackTrace();
 			// chill, stuff happens.
 		}
-		Action savedAction = actionRepo.save(action);
+		Action savedAction = actionRepo.save(actions);
 		if (savedAction != null) {
 			return "redirect:viewAction/" + savedAction.getId();
 		}
@@ -356,9 +357,8 @@ public class MainController {
 		if (id != null) {
 			try {
 				actionRepo.findAll(); // Leave as is
-				Action action = actionRepo.findById(Integer.parseInt(id)).isPresent() ? actionRepo.findById(Integer.parseInt(id)).get() : null;//APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
+				Action action = actionRepo.findById(Integer.parseInt(id)).isPresent() ? actionRepo.findById(Integer.parseInt(id)).get() : null;
 				if (action != null) {
-					model.addAttribute("attributes", action.getAttributes() != null ? action.getAttributes() : new ArrayList<Action>());
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
 				} else {
@@ -377,6 +377,92 @@ public class MainController {
 		}
 		
 		return "action";
+	}
+	/*
+	 * Act GetMapping and PostMapping
+	 */
+	@GetMapping("safebusiness/listActs")
+	public String listActs(Model model) {
+		Iterable<Act> interator = actRepo.findAll();
+		@SuppressWarnings("unchecked")
+		List<Act> acts = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("acts", acts);
+		return "listActs";
+	}
+	@GetMapping("safebusiness/act/{id}")
+	public String createOrViewAct(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Act act = APIUtils.getActById(Integer.parseInt(id), actRepo.findAll());
+				if (act != null) {
+					model.addAttribute("act", act);
+					model.addAttribute("inViewMode", true);
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("act", new Act());
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("act", new Act());
+				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("act", new Act());
+			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "act";
+	}
+	
+	@PostMapping("safebusiness/addAct/{string}")
+	public String addAct(@Valid Act act, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			act.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		Act savedAct = actRepo.save(act);
+		if (savedAct != null) {
+			return "redirect:viewAct/" + savedAct.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	// Another hack around here
+	@GetMapping("safebusiness/addAct/viewAct/{id}")
+	public String viewActDuplicateHandler(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Act act = APIUtils.getActById(Integer.parseInt(id), actRepo.findAll());
+				if (act != null) {
+					model.addAttribute("act", act);
+					model.addAttribute("inViewMode", true);
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("act", new Act());
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("act", new Act());
+				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("act", new Act());
+			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "act";
 	}
 	
 	

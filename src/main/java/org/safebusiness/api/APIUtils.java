@@ -7,6 +7,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.safebusiness.Section;
+import org.safebusiness.Act;
 import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
@@ -61,7 +62,27 @@ public class APIUtils {
 
 		return null;
 	}
-	
+	/*
+	 * This is the Get actionattribute method
+	 */
+	@SuppressWarnings("unchecked")
+	public static Act getActById(Integer id, Iterable<Act> it) {
+		if (id == null || it == null) {
+			return null;
+		}
+		Iterator<Act> iterator = it.iterator();
+		
+		List<Act> acts = iterator != null ? IteratorUtils.toList(iterator) : new ArrayList<>();
+		
+		for (Act ac : acts) {
+			if (ac.getId() == id) {
+				return ac;
+			}
+		}
+
+
+		return null;
+	}
 	/**
 	 * Gets {@link Action} by id.
 	 * 
