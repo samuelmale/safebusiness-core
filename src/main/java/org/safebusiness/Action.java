@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.persistence.JoinColumn;
 
 @Entity
@@ -30,7 +31,16 @@ public class Action implements Customizable<ActionAttribute> {
 	// Procedure owning this Action
 	@OneToOne(mappedBy = "action")
 	private Procedure procedure;
-			
+	
+	@Transient
+	private String instructionString;
+	
+	// This a hack around having this @id in String format
+		// I hate casting in thymeleafe templates
+	@Column
+	private String stringId;
+	@Column
+	private String name;
 	@Override
 	public void addAttribute(ActionAttribute attribute) {
 		if (attributes == null) {
@@ -63,5 +73,46 @@ public class Action implements Customizable<ActionAttribute> {
 		}
 		return !attributes.isEmpty();
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Procedure getProcedure() {
+		return procedure;
+	}
+
+	public void setProcedure(Procedure procedure) {
+		this.procedure = procedure;
+	}
+
+	public String getInstructionString() {
+		return instructionString;
+	}
+
+	public void setInstructionString(String instructionString) {
+		this.instructionString = instructionString;
+	}
+
+	public String getStringId() {
+		return stringId;
+	}
+
+	public void setStringId(String stringId) {
+		this.stringId = stringId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 
 }

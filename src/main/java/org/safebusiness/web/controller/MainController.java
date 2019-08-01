@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.apache.commons.collections.IteratorUtils;
 
 import org.safebusiness.Act;
+import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.Datatype;
@@ -17,7 +18,7 @@ import org.safebusiness.Section;
 import org.safebusiness.api.APIUtils;
 
 import org.safebusiness.api.repo.ActionAttributeRepository;
-
+import org.safebusiness.api.repo.ActionRepository;
 import org.safebusiness.api.repo.ArticleRepository;
 import org.safebusiness.api.repo.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class MainController {
 	SectionRepository sectionRepo;
 	@Autowired
 	ActionAttributeRepository attributeRepo;
+	@Autowired
+	ActionRepository actionRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index() {
@@ -46,7 +49,9 @@ public class MainController {
 	public String baseUrl() {
 		return "redirect:safebusiness/index";
 	}
-	
+	/*
+	 * Article GetMapping and PostMApping
+	 */
 	@GetMapping("safebusiness/article/{id}")
 	public String createOrViewArticle(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -89,14 +94,7 @@ public class MainController {
 		return "listArticles";
 	}
 	
-	@GetMapping("safebusiness/listAttributes")
-	public String listAttributes(Model model) {
-		Iterable<ActionAttribute> interator = attributeRepo.findAll();
-		@SuppressWarnings("unchecked")
-		List<ActionAttribute> attributes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
-		model.addAttribute("attributes", attributes);
-		return "listAttributes";
-	}
+	
 	private List<Article> parseArticleString(String val) {
 		List<Article> ret = new ArrayList<>();
 		String[] stringIds = val.split(",");
@@ -114,64 +112,17 @@ public class MainController {
 		return ret;
 	}
 		
-	
-	@GetMapping("safebusiness/section/{id}")
-	public String createOrViewSection(Model model, @PathVariable("id") String id) {
-		if (id != null) {
-			try {
-				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
-				if (section != null) {
-					model.addAttribute("section", sectionRepo.findById(Integer.parseInt(id)).get());
-					model.addAttribute("inViewMode", true);
-				} else {
-					model.addAttribute("inViewMode", false);
-					model.addAttribute("section", new Section());
-				}
-			} catch(NumberFormatException ex) {
-				model.addAttribute("inViewMode", false);
-				model.addAttribute("section", new Section());
-			}
-			
-		} else {
-			model.addAttribute("inViewMode", false);
-			model.addAttribute("section", new Section());
-		}
-		
-		return "section";
-	}
-	
-	/*@GetMapping("safebusiness/newSection")
-	public String newSection(Model model) {
-		model.addAttribute("section", new Section());
-		return "addSection";
-	}*/
-	
-	@PostMapping("safebusiness/addSection/{string}")
-	public String addSection(@Valid Section section, @PathVariable("string") String action, HttpServletResponse httpResponse) {
-		try {
-			// Make updating possible
-			// TODO This has to be done to all domains supporting view modes
-			section.setId(Integer.parseInt(action));
-						
-		} catch(NumberFormatException ex) {
-			// chill, stuff happens.
-		}
-		Section savedSection = sectionRepo.save(section);
-		if (savedSection != null) {
-			return "redirect:viewSection/" + savedSection.getId();
-		}
-		return "redirect:safebusiness/index";
-	}
-	
-	@GetMapping("safebusiness/listSections")
-	public String listSections(Model model) {
-		Iterable<Section> interator = sectionRepo.findAll();
+	/*
+	 * Attributes GetMappping and PostMapping
+	 */
+	@GetMapping("safebusiness/listAttributes")
+	public String listAttributes(Model model) {
+		Iterable<ActionAttribute> interator = attributeRepo.findAll();
 		@SuppressWarnings("unchecked")
-		List<Section> sections = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
-		model.addAttribute("sections", sections);
-		return "listSections";
+		List<ActionAttribute> attributes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("attributes", attributes);
+		return "listAttributes";
 	}
-
 	@GetMapping("safebusiness/attribute/{id}")
 	public String createOrViewAttribute(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -247,6 +198,68 @@ public class MainController {
 		
 		return "attribute";
 	}
+	
+	/*
+	 * Section GetMapping and PostMapping
+	 *
+	 */
+
+	@GetMapping("safebusiness/section/{id}")
+	public String createOrViewSection(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
+				if (section != null) {
+					model.addAttribute("section", sectionRepo.findById(Integer.parseInt(id)).get());
+					model.addAttribute("inViewMode", true);
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("section", new Section());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("section", new Section());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("section", new Section());
+		}
+		
+		return "section";
+	}
+	
+	/*@GetMapping("safebusiness/newSection")
+	public String newSection(Model model) {
+		model.addAttribute("section", new Section());
+		return "addSection";
+	}*/
+	
+	@PostMapping("safebusiness/addSection/{string}")
+	public String addSection(@Valid Section section, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			section.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		Section savedSection = sectionRepo.save(section);
+		if (savedSection != null) {
+			return "redirect:viewSection/" + savedSection.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	@GetMapping("safebusiness/listSections")
+	public String listSections(Model model) {
+		Iterable<Section> interator = sectionRepo.findAll();
+		@SuppressWarnings("unchecked")
+		List<Section> sections = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("sections", sections);
+		return "listSections";
+	}
 	private List<Section> parseSectionString(String val) {
 		List<Section> sec = new ArrayList<>();
 		String[] stringIds = val.split(",");
@@ -288,5 +301,94 @@ public class MainController {
 		
 		return "section";
 	}
+	
+	/*
+	 * Action GetMapping and PostMapping Bellow
+	 * 
+	 */
+	@GetMapping("safebusiness/listActions")
+	public String listActions(Model model) {
+		Iterable<Action> interator = actionRepo.findAll();
+		@SuppressWarnings("unchecked")
+		List<Action> actions = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("actions", actions);
+		return "listActions";
+	}
+	@GetMapping("safebusiness/action/{id}")
+	public String createOrViewAction(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Action action = APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
+				if (action != null) {
+					model.addAttribute("action", action);
+					model.addAttribute("inViewMode", true);
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("action", new Action());
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("action", new Action());
+				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("action", new Action());
+			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "action";
+	}
+	
+	@PostMapping("safebusiness/addAction/{string}")
+	public String addAction(@Valid Action actions, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			actions.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		Action savedAction = actionRepo.save(actions);
+		if (savedAction != null) {
+			return "redirect:viewAction/" + savedAction.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	// Another hack around here
+	@GetMapping("safebusiness/addAction/viewAction/{id}")
+	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Action action = APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
+				if (action != null) {
+					model.addAttribute("action", action);
+					model.addAttribute("inViewMode", true);
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("action", new Action());
+					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("action", new Action());
+				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("action", new Action());
+			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+		}
+		
+		return "action";
+	}
+	
 	
 }

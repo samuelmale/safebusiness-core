@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.safebusiness.Section;
+import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.User;
@@ -36,7 +37,9 @@ public class APIUtils {
 		}
 		return null;
 	}
-	
+	/*
+	 * This is the Get actionattribute method
+	 */
 	@SuppressWarnings("unchecked")
 	public static ActionAttribute getActionAttributeById(Integer id, Iterable<ActionAttribute> it) {
 		if (id == null || it == null) {
@@ -49,6 +52,27 @@ public class APIUtils {
 		for (ActionAttribute att : attributes) {
 			if (att.getId() == id) {
 				return att;
+			}
+		}
+
+
+		return null;
+	}
+	/*
+	 * This is the Get Action method
+	 */
+	@SuppressWarnings("unchecked")
+	public static Action getActionById(Integer id, Iterable<Action> it) {
+		if (id == null || it == null) {
+			return null;
+		}
+		Iterator<Action> iterator = it.iterator();
+		
+		List<Action> actions = iterator != null ? IteratorUtils.toList(iterator) : new ArrayList<>();
+		
+		for (Action acti : actions) {
+			if (acti.getId() == id) {
+				return acti;
 			}
 		}
 
