@@ -334,17 +334,17 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addAction/{string}")
-	public String addAction(@Valid Action actions, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+	public String addAction(@Valid Action action, @PathVariable("string") String routeAction, HttpServletResponse httpResponse) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
-			actions.setId(Integer.parseInt(action));
+			action.setId(Integer.parseInt(routeAction));
 						
 		} catch(NumberFormatException ex) {
 			ex.printStackTrace();
 			// chill, stuff happens.
 		}
-		Action savedAction = actionRepo.save(actions);
+		Action savedAction = actionRepo.save(action);
 		if (savedAction != null) {
 			return "redirect:viewAction/" + savedAction.getId();
 		}
