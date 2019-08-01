@@ -22,9 +22,13 @@ public class SectionRepositoryTest {
 	
 	@Test
 	public void save() {
+		Article article = new Article();
+		article.setArticleNumber(60);
+		article = articleRepo.save(article);
 		Section sec = new Section();
 		sec.setArticles(null);
 		sec.setName("Test Name");
+		//sec.se
 		repo.save(sec);
 	}
 	

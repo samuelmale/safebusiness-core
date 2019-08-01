@@ -109,19 +109,19 @@ public class APIUtils {
 	@SuppressWarnings("unchecked")
 	public static List<Article> parseArticleString(String val, ArticleRepository articleRepo) {
 		List<Article> ret = new ArrayList<>();
-//		List<Article> existingArticles = careFullyCastIterableToList(articleRepo.getAll());
-//		for(Integer num : parseStringToIntegerList(val)) {
-//			for (Article candidate : existingArticles) {
-//				if (candidate.getArticleNumber() == num) {
-//					ret.add(candidate);
-//					break;
-//				}
-//				
-//			}
-//		}
-		for (Integer num : parseStringToIntegerList(val)) {
-			ret.add(articleRepo.findByNumber(num));
+		List<Article> existingArticles = careFullyCastIterableToList(articleRepo.findAll());
+		for(Integer num : parseStringToIntegerList(val)) {
+			for (Article candidate : existingArticles) {
+				if (candidate.getArticleNumber() == num) {
+					ret.add(candidate);
+					break;
+				}
+				
+			}
 		}
+//		for (Integer num : parseStringToIntegerList(val)) {
+//			ret.add(articleRepo.findByNumber(num));
+//		}
 		return ret;	
 	}
 
