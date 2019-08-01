@@ -13,22 +13,36 @@
 					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
 					<div>
 						
-						<form action="#" th:action="@{/safebusiness/addAction/{string}(string=${action.stringId} == null ? 'new' : ${action.stringId})}" th:object="${actoin}" method="post" id="sb-new-action">
+						<form action="#" th:action="@{/safebusiness/addAction/{string}(string=${action.stringId} == null ? 'new' : ${action.stringId})}" th:object="${action}" method="post" id="sb-new-action">
 							<div class="form-row">
 								<div class="form-group col-sm-6">
 									<label for="number">Action Name:</label>
-									
-									<input type="text" th:field="*{stringId}" placeholder="Section Name" class="form-control" />
+									<input type="text" th:field="*{name}" placeholder="Action Name" class="form-control" />
 								</div>
 							</div>
 							
-							<!-- During creation of the Attribute, we can't add attribute -->
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="article-value">Instructions:</label>
+									<textarea name="article-value" th:field="*{instructionString}" placeholder="Instructions" class="form-control" rows="7"></textarea>
+								</div>
+							</div>
+							
 							<!-- Should apply while in view mode -->
 							<div th:if="${inViewMode} == true" class="form-row">
-							<!--  -->
-								<label for="value">Provide <span th:utext="${action.name}"></span></label>
-								<input type="text" th:field="*{text}" placeholder="Value" class="form-control" />
-								<br/>
+								<div id="" class="container">
+								<div th:if="${#lists.isEmpty(attributes)}">
+									No Available attributes
+								</div>
+								<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
+									<ul class="list-group">
+									  <li class="list-group-item" th:each="article : ${articles}">
+									  	<a th:href="@{attribute/{action}(action=${attribute.id})}"><span th:utext="${attribute.name}"></span></a>
+									  </li>
+									</ul>
+									
+								</div>
+							</div>
 							</div>
 							</div>
 							<div class="form-row">
@@ -50,7 +64,7 @@
 	</div>
 	<script type="text/javascript">
 		$('#sb-submit').click( function() {
-			$('#sb-new-attribute').submit();
+			$('#sb-new-action').submit();
 		});
 	</script>
 	

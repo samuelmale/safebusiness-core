@@ -314,6 +314,7 @@ public class MainController {
 		model.addAttribute("actions", actions);
 		return "listActions";
 	}
+	
 	@GetMapping("safebusiness/action/{id}")
 	public String createOrViewAction(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -344,16 +345,16 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addAction/{string}")
-	public String addAction(@Valid Action actions, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+	public String addAction(@Valid Action action, @PathVariable("string") String routeAction, HttpServletResponse httpResponse) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
-			actions.setId(Integer.parseInt(action));
+			action.setId(Integer.parseInt(routeAction));
 						
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
 		}
-		Action savedAction = actionRepo.save(actions);
+		Action savedAction = actionRepo.save(action);
 		if (savedAction != null) {
 			return "redirect:viewAction/" + savedAction.getId();
 		}
@@ -365,8 +366,9 @@ public class MainController {
 	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {
 		if (id != null) {
 			try {
-				Action action = APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
+				Action action = actionRepo.findById(Integer.parseInt(id)).isPresent() ? actionRepo.findById(Integer.parseInt(id)).get() : null;//APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
 				if (action != null) {
+					model.addAttribute("attributes", action.getAttributes() != null ? action.getAttributes() : new ArrayList<Action>());
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
 					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());

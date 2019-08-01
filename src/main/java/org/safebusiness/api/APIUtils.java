@@ -58,8 +58,13 @@ public class APIUtils {
 
 		return null;
 	}
-	/*
-	 * This is the Get Action method
+	
+	/**
+	 * Gets {@link Action} by id.
+	 * 
+	 * @param id
+	 * @param it
+	 * @return action
 	 */
 	@SuppressWarnings("unchecked")
 	public static Action getActionById(Integer id, Iterable<Action> it) {
@@ -67,16 +72,14 @@ public class APIUtils {
 			return null;
 		}
 		Iterator<Action> iterator = it.iterator();
-		
 		List<Action> actions = iterator != null ? IteratorUtils.toList(iterator) : new ArrayList<>();
 		
-		for (Action acti : actions) {
-			if (acti.getId() == id) {
-				return acti;
+		for (Action action : actions) {
+			if (action.getId() == id) {
+				return action;
 			}
 		}
-
-
 		return null;
 	}
+	
 }

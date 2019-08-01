@@ -22,25 +22,27 @@ public class Action implements Customizable<ActionAttribute> {
 	@GeneratedValue
 	@Column(name="action_id")
 	private Integer id;
-	@ElementCollection
-	@CollectionTable(name="Instructions", joinColumns=@JoinColumn(name="action_id"))
-	@Column(name="instructions")
+//	@ElementCollection
+//	@CollectionTable(name="Instructions", joinColumns=@JoinColumn(name="action_id"))
+//	@Column(name="instructions")
+	@Transient // As for now
 	private List<String> instructions;
 	@OneToMany(mappedBy="action")
 	private List<ActionAttribute> attributes;
 	// Procedure owning this Action
 	@OneToOne(mappedBy = "action")
 	private Procedure procedure;
-	
-	@Transient
+	// As for now
+	@Column
 	private String instructionString;
 	
 	// This a hack around having this @id in String format
-		// I hate casting in thymeleafe templates
+	// I hate casting in thymeleafe templates
 	@Column
 	private String stringId;
 	@Column
 	private String name;
+	
 	@Override
 	public void addAttribute(ActionAttribute attribute) {
 		if (attributes == null) {
