@@ -1,0 +1,16 @@
+<div th:fragment="listactions">
+<div id="" class="container">
+						<div th:if="${#lists.isEmpty(actions)}">
+							No Available actions
+						</div>
+						<div id="sbist" th:unless="${#lists.isEmpty(actions)}">
+							<ul class="list-group">
+							  <li class="list-group-item" th:each="action : ${actions}">
+							  	<a th:href="@{action/{action}(action=${action.id})}">Number : <span th:utext="${action.id}"></span></a>
+							  </li>
+							</ul>
+							
+						</div>
+						
+					</div>
+</div>
