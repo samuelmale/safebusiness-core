@@ -48,6 +48,8 @@ public class Section {
 	
 	@Transient
 	private String childrenCommaSeparatedList;
+	@Transient
+	private String articleCommaSeparatedList;
 	
 	// Getters and Setters
 	public String getName() {
@@ -111,6 +113,12 @@ public class Section {
 			setStringId(id.toString());
 		}
 		this.id = id;
+	}
+	public String getArticleCommaSeparatedList() {
+		return articleCommaSeparatedList;
+	}
+	public void setArticleCommaSeparatedList(String articleCommaSeparatedList) {
+		this.articleCommaSeparatedList = articleCommaSeparatedList;
 	}
 	
 }
