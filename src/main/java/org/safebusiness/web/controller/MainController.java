@@ -2,14 +2,10 @@ package org.safebusiness.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-
 import org.apache.commons.collections.IteratorUtils;
 
-import org.safebusiness.Act;
 import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
@@ -49,7 +45,8 @@ public class MainController {
 	public String baseUrl() {
 		return "redirect:safebusiness/index";
 	}
-	/*
+	
+	/**
 	 * Article GetMapping and PostMApping
 	 */
 	@GetMapping("safebusiness/article/{id}")
@@ -76,11 +73,45 @@ public class MainController {
 		return "article";
 	}
 	
-	@PostMapping("addArticle")
-	public String addArticle(@Valid Article article) {
+	@GetMapping("safebusiness/addArticle/article/{id}")
+	public String createOrViewArticleDuplicateHandler(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
+					model.addAttribute("article", articleRepo.findById(Integer.parseInt(id)).get());
+					model.addAttribute("inViewMode", true);
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("article", new Article());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("article", new Article());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("article", new Article());
+		}
+		
+		return "article";
+	}
+	
+	@PostMapping("safebusiness/addArticle/{action}")
+	public String addArticle(@Valid Article article, @PathVariable("action") String action) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			article.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		List<Article> children = APIUtils.parseArticleString(article.getChildrenCommaSeparatedList(), articleRepo);
+		article.setChildArticles(children);
 		Article savedArticle = articleRepo.save(article);
 		if (savedArticle != null) {
-			return "redirect:safebusiness/article/" + savedArticle.getId();
+			return "redirect:article/" + savedArticle.getId();
 		}
 		return "redirect:safebusiness/index";
 	}
@@ -93,25 +124,7 @@ public class MainController {
 		model.addAttribute("articles", articles);
 		return "listArticles";
 	}
-	
-	
-	private List<Article> parseArticleString(String val) {
-		List<Article> ret = new ArrayList<>();
-		String[] stringIds = val.split(",");
-
-		for (String id : stringIds) {
-			// Lookup the Article
-			try {
-				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
-					ret.add(articleRepo.findById(Integer.parseInt(id)).get());	
-				}
-			} catch(NumberFormatException ex) {
-				// Ignore..
-			}
-		}
-		return ret;
-	}
-		
+			
 	/*
 	 * Attributes GetMappping and PostMapping
 	 */
@@ -123,6 +136,7 @@ public class MainController {
 		model.addAttribute("attributes", attributes);
 		return "listAttributes";
 	}
+	
 	@GetMapping("safebusiness/attribute/{id}")
 	public String createOrViewAttribute(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -161,7 +175,7 @@ public class MainController {
 						
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
-		}
+		}		
 		ActionAttribute savedAttribute = attributeRepo.save(attribute);
 		if (savedAttribute != null) {
 			return "redirect:viewAttribute/" + savedAttribute.getId();
@@ -229,12 +243,6 @@ public class MainController {
 		return "section";
 	}
 	
-	/*@GetMapping("safebusiness/newSection")
-	public String newSection(Model model) {
-		model.addAttribute("section", new Section());
-		return "addSection";
-	}*/
-	
 	@PostMapping("safebusiness/addSection/{string}")
 	public String addSection(@Valid Section section, @PathVariable("string") String action, HttpServletResponse httpResponse) {
 		try {
@@ -260,23 +268,7 @@ public class MainController {
 		model.addAttribute("sections", sections);
 		return "listSections";
 	}
-	private List<Section> parseSectionString(String val) {
-		List<Section> sec = new ArrayList<>();
-		String[] stringIds = val.split(",");
-
-		for (String id : stringIds) {
-			// Lookup the Section
-			try {
-				if (sectionRepo.findById(Integer.parseInt(id)).isPresent()) {
-					sec.add(sectionRepo.findById(Integer.parseInt(id)).get());	
-				}
-			} catch(NumberFormatException ex) {
-				// Ignore..
-			}
-		}
-		return sec;
-	}
-	
+		
 	@GetMapping("safebusiness/addSection/viewSection/{id}")
 	public String ViewSectionDuplicateHandler(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -312,7 +304,7 @@ public class MainController {
 		@SuppressWarnings("unchecked")
 		List<Action> actions = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
 		model.addAttribute("actions", actions);
-		return "listActions";
+		return "listAction";
 	}
 	
 	@GetMapping("safebusiness/action/{id}")
@@ -323,22 +315,18 @@ public class MainController {
 				if (action != null) {
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("action", new Action());
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				}
 			} catch(NumberFormatException ex) {
 				model.addAttribute("inViewMode", false);
 				model.addAttribute("action", new Action());
-				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 			}
 			
 		} else {
 			model.addAttribute("inViewMode", false);
 			model.addAttribute("action", new Action());
-			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 		}
 		
 		return "action";
@@ -352,6 +340,7 @@ public class MainController {
 			action.setId(Integer.parseInt(routeAction));
 						
 		} catch(NumberFormatException ex) {
+			ex.printStackTrace();
 			// chill, stuff happens.
 		}
 		Action savedAction = actionRepo.save(action);
@@ -366,27 +355,25 @@ public class MainController {
 	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {
 		if (id != null) {
 			try {
+				actionRepo.findAll(); // Leave as is
 				Action action = actionRepo.findById(Integer.parseInt(id)).isPresent() ? actionRepo.findById(Integer.parseInt(id)).get() : null;//APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
 				if (action != null) {
 					model.addAttribute("attributes", action.getAttributes() != null ? action.getAttributes() : new ArrayList<Action>());
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("action", new Action());
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				}
-			} catch(NumberFormatException ex) {
+			} catch(Exception ex) {
+				ex.printStackTrace();
 				model.addAttribute("inViewMode", false);
 				model.addAttribute("action", new Action());
-				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
-			}
+			} 
 			
 		} else {
 			model.addAttribute("inViewMode", false);
 			model.addAttribute("action", new Action());
-			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 		}
 		
 		return "action";

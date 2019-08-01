@@ -33,12 +33,20 @@ public class Article {
 	private Integer articleNumber;
 	@Transient
 	private String childrenCommaSeparatedList;
+	@Transient
+	private String stringId;
 	
 	public Integer getId() {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		return id;
 	}
 	
 	public void setId(Integer id) {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		this.id = id;
 	}
 	
@@ -88,6 +96,14 @@ public class Article {
 
 	public void setArticleNumber(Integer articleNumber) {
 		this.articleNumber = articleNumber;
+	}
+
+	public String getStringId() {
+		return stringId;
+	}
+
+	public void setStringId(String stringId) {
+		this.stringId = stringId;
 	}	
 	
 }

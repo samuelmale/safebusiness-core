@@ -1,5 +1,5 @@
 <div th:fragment="newArticle">
-	<form action="#" th:action="@{/addArticle}" th:object="${article}" method="post" id="sb-new-article">
+	<form action="#" th:action="@{/safebusiness/addArticle/{string}(string=${article.stringId} == null ? 'new' : ${article.stringId})}" th:object="${article}" method="post" id="sb-new-article">
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label for="number">Article Number:</label>

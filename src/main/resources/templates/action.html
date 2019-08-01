@@ -27,7 +27,12 @@
 									<textarea name="article-value" th:field="*{instructionString}" placeholder="Instructions" class="form-control" rows="7"></textarea>
 								</div>
 							</div>
-							
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="text">Add Attributes:</label>
+									<input type="text" th:field="*{instructionString}" placeholder="Comma delimitted Attribute Names" class="form-control" />
+								</div>
+							</div>
 							<!-- Should apply while in view mode -->
 							<div th:if="${inViewMode} == true" class="form-row">
 								<div id="" class="container">
@@ -56,9 +61,10 @@
 						
 					</div>
 				</div>
+				<!-- Footer -->
+				<div th:insert="fragments/footer.html :: footer"></div>
 			</div>
-			<!-- Footer -->
-			<div th:insert="fragments/footer.html :: footer"></div>
+			
 		</div>
 		
 	</div>

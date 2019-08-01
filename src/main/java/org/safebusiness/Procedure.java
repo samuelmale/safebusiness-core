@@ -21,8 +21,7 @@ public class Procedure {
 	private Integer id;
 	@OneToMany(mappedBy="procedure")
     private List<Act> acts;
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "action_id", referencedColumnName = "action_id")
+	@OneToOne(mappedBy="procedure")
 	private Action action;
 	// Process owning this Procedure
 	@ManyToOne

@@ -30,7 +30,8 @@ public class Action implements Customizable<ActionAttribute> {
 	@OneToMany(mappedBy="action")
 	private List<ActionAttribute> attributes;
 	// Procedure owning this Action
-	@OneToOne(mappedBy = "action")
+	@OneToOne
+	@JoinColumn(name="procedure_id", nullable=true)
 	private Procedure procedure;
 	// As for now
 	@Column
@@ -42,6 +43,9 @@ public class Action implements Customizable<ActionAttribute> {
 	private String stringId;
 	@Column
 	private String name;
+	
+	@Transient
+	private String attributeNamesString;
 	
 	@Override
 	public void addAttribute(ActionAttribute attribute) {
@@ -77,10 +81,16 @@ public class Action implements Customizable<ActionAttribute> {
 	}
 
 	public Integer getId() {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		return id;
 	}
 
 	public void setId(Integer id) {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		this.id = id;
 	}
 
@@ -115,6 +125,13 @@ public class Action implements Customizable<ActionAttribute> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public String getAttributeNamesString() {
+		return attributeNamesString;
+	}
+
+	public void setAttributeNamesString(String attributeNamesString) {
+		this.attributeNamesString = attributeNamesString;
+	}
 
 }
