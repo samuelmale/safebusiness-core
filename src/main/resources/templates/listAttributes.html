@@ -9,20 +9,7 @@
 			<div id="content">
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
-					<div id="" class="container">
-						<div th:if="${#lists.isEmpty(attributes)}">
-							No Available attributes
-						</div>
-						<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
-							<ul class="list-group">
-							  <li class="list-group-item" th:each="article : ${articles}">
-							  	<a th:href="@{attribute/{action}(action=${attribute.id})}"><span th:utext="${attribute.name}"></span></a>
-							  </li>
-							</ul>
-							
-						</div>
-						
-					</div>
+					<div th:insert="fragments/listAttributes.html :: listattributes"></div>
 				</div>
 			</div>
 			<!-- Footer -->

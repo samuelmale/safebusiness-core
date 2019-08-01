@@ -1,0 +1,78 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4 th:if="${inViewMode} == true"><span th:utext="${action.id}"></span></h4>
+					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
+					<div>
+						
+						<form action="#" th:action="@{/safebusiness/addAction/{string}(string=${action.stringId} == null ? 'new' : ${action.stringId})}" th:object="${action}" method="post" id="sb-new-action">
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="number">Action Name:</label>
+									<input type="text" th:field="*{name}" placeholder="Action Name" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="article-value">Instructions:</label>
+									<textarea name="article-value" th:field="*{instructionString}" placeholder="Instructions" class="form-control" rows="7"></textarea>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="text">Add Attributes:</label>
+									<input type="text" th:field="*{instructionString}" placeholder="Comma delimitted Attribute Names" class="form-control" />
+								</div>
+							</div>
+							<!-- Should apply while in view mode -->
+							<div th:if="${inViewMode} == true" class="form-row">
+								<div id="" class="container">
+								<div th:if="${#lists.isEmpty(attributes)}">
+									No Available attributes
+								</div>
+								<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
+									<ul class="list-group">
+									  <li class="list-group-item" th:each="article : ${articles}">
+									  	<a th:href="@{attribute/{action}(action=${attribute.id})}"><span th:utext="${attribute.name}"></span></a>
+									  </li>
+									</ul>
+									
+								</div>
+							</div>
+							</div>
+							</div>
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+					
+							</div>
+						</form>
+						
+					</div>
+				</div>
+				<!-- Footer -->
+				<div th:insert="fragments/footer.html :: footer"></div>
+			</div>
+			
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-action').submit();
+		});
+	</script>
+	
+	
+</body>
