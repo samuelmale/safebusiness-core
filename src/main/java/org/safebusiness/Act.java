@@ -23,7 +23,7 @@ public class Act {
 	private String name;
 	// Procedure owning this Act
 	@ManyToOne
-    @JoinColumn(name="procedure_id", nullable=true)
+    @JoinColumn(name="procedure_id_pk", nullable=true)
 	private Procedure procedure;
 	@Column
 	private String stringId;

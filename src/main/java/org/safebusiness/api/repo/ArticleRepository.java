@@ -1,7 +1,5 @@
 package org.safebusiness.api.repo;
 
-import java.util.List;
-
 import org.safebusiness.Article;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

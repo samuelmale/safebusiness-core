@@ -25,7 +25,7 @@ public class Procedure {
 	private Action action;
 	// Process owning this Procedure
 	@ManyToOne
-    @JoinColumn(name="process_id", nullable=false)
+    @JoinColumn(name="process_id_pk", nullable=false)
 	private Process process;
 	
 	// Getters and Setters

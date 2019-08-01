@@ -31,11 +31,11 @@ public class Section {
 	private List<Section> subSections;
 	// If this is a sub section, this is the Parent reference to the super section
 	@ManyToOne
-    @JoinColumn(name="parent_id", nullable=true)
+    @JoinColumn(name="parent_id_fk", nullable=true)
 	private Section parent;
 	// The Act owning this section
 	@ManyToOne
-    @JoinColumn(name="act_id", nullable=true)
+    @JoinColumn(name="act_id_fk", nullable=true)
 	private Act act;
 	
 	//This a hack around having this @id in String format

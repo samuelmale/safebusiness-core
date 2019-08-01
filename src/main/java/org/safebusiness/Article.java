@@ -23,11 +23,11 @@ public class Article {
 	@OneToMany(mappedBy="parent")
 	private List<Article> childArticles;
 	@ManyToOne
-    @JoinColumn(name="parent_id", nullable=true)
+    @JoinColumn(name="parent_id_fk")
 	private Article parent;
 	// Section where this article falls
 	@ManyToOne
-    @JoinColumn(name="section_id", nullable=true)
+    @JoinColumn(name="section_id_fk")
 	private Section section;
 	@Column(unique=true)
 	private Integer articleNumber;
