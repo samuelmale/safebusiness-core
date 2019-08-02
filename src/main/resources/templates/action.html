@@ -9,7 +9,7 @@
 			<div id="content">
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
-					<h4 th:if="${inViewMode} == true"><span th:utext="${action.id}"></span></h4>
+					<h4 th:if="${inViewMode} == true"><span th:utext="${action.name}"></span></h4>
 					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
 					<div>
 						
@@ -30,7 +30,7 @@
 							<div class="form-row">
 								<div class="form-group col-sm-6">
 									<label for="text">Add Attributes:</label>
-									<input type="text" th:field="*{instructionString}" placeholder="Comma delimitted Attribute Names" class="form-control" />
+									<input type="text" th:field="*{attributeNamesString}" placeholder="Comma delimitted Attribute Names" class="form-control" />
 								</div>
 							</div>
 							<!-- Should apply while in view mode -->

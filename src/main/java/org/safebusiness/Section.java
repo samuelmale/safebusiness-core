@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -34,8 +35,8 @@ public class Section {
     @JoinColumn(name="parent_id_fk", nullable=true)
 	private Section parent;
 	// The Act owning this section
-	@ManyToOne
-    @JoinColumn(name="act_id_fk", nullable=true)
+	@ManyToOne(fetch=FetchType.LAZY)
+  @JoinColumn(name="act_id_fk_silly", nullable=true)
 	private Act act;
 	
 	//This a hack around having this @id in String format

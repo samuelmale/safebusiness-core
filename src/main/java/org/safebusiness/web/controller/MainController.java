@@ -337,6 +337,7 @@ public class MainController {
 		model.addAttribute("actions", actions);
 		return "listAction";
 	}
+	
 	@GetMapping("safebusiness/action/{id}")
 	public String createOrViewAction(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -407,6 +408,7 @@ public class MainController {
 		
 		return "action";
 	}
+	
 	/*
 	 * Act GetMapping and PostMapping
 	 */
@@ -418,6 +420,7 @@ public class MainController {
 		model.addAttribute("acts", acts);
 		return "listActs";
 	}
+	
 	@GetMapping("safebusiness/act/{id}")
 	public String createOrViewAct(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -426,22 +429,19 @@ public class MainController {
 				if (act != null) {
 					model.addAttribute("act", act);
 					model.addAttribute("inViewMode", true);
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+					model.addAttribute("sections", act.getSections() != null ? act.getSections() : new ArrayList<>());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("act", new Act());
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				}
 			} catch(NumberFormatException ex) {
 				model.addAttribute("inViewMode", false);
 				model.addAttribute("act", new Act());
-				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 			}
 			
 		} else {
 			model.addAttribute("inViewMode", false);
 			model.addAttribute("act", new Act());
-			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 		}
 		
 		return "act";
@@ -457,6 +457,11 @@ public class MainController {
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
 		}
+		List<Section> sections = APIUtils.parseSectionString(act.getSectionListString(), sectionRepo);
+		for (Section sec : sections) {
+			sec.setAct(act);
+		}
+		act.setSections(sections);
 		Act savedAct = actRepo.save(act);
 		if (savedAct != null) {
 			return "redirect:viewAct/" + savedAct.getId();

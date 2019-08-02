@@ -9,7 +9,7 @@
 			<div id="content">
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
-					<h4 th:if="${inViewMode} == true"><span th:utext="${act.id}"></span></h4>
+					<h4 th:if="${inViewMode} == true"><span th:utext="${act.name}"></span></h4>
 					<h4 th:unless="${inViewMode} == true">New Act</h4>
 					<div>	
 						<form action="#" th:action="@{/safebusiness/addAct/{string}(string=${act.stringId} == null ? 'new' : ${act.stringId})}" th:object="${act}" method="post" id="sb-new-act">
@@ -20,13 +20,24 @@
 								</div>
 							</div>
 							
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="name">Add Sections:</label>
+									<input type="text" th:field="*{sectionListString}" placeholder="Comma delimitted Section Names" class="form-control" />
+								</div>
+							</div>
+								
+							</div>
+							<div th:if="${inViewMode} == true">
+								<h6>Sections:</h6>
+								<div th:insert="fragments/listActs.html :: listacts"></div>
 							</div>
 							<div class="form-row">
 								<div>
 								  <button type="button" class="btn btn-danger">Cancel</button>
 								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
 								</div>
-					
+				
 							</div>
 						</form>
 						

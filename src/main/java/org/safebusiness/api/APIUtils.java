@@ -119,9 +119,7 @@ public class APIUtils {
 				
 			}
 		}
-//		for (Integer num : parseStringToIntegerList(val)) {
-//			ret.add(articleRepo.findByNumber(num));
-//		}
+
 		return ret;	
 	}
 
