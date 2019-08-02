@@ -27,7 +27,7 @@ public class Article {
 	private Article parent;
 	// Section where this article falls
 	@ManyToOne
-    @JoinColumn(name="section_id_fk")
+    @JoinColumn(name="section_id_pk")
 	private Section section;
 	@Column(unique=true)
 	private Integer articleNumber;

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class Act {
@@ -27,6 +28,8 @@ public class Act {
 	private Procedure procedure;
 	@Column
 	private String stringId;
+	@Transient
+	private String sectionListString;
 	
 	// Getters and Setters
 	public List<Section> getSections() {
@@ -67,6 +70,14 @@ public class Act {
 
 	public void setStringId(String stringId) {
 		this.stringId = stringId;
+	}
+
+	public String getSectionListString() {
+		return sectionListString;
+	}
+
+	public void setSectionListString(String sectionListString) {
+		this.sectionListString = sectionListString;
 	}
 	
 }
