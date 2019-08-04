@@ -1,0 +1,9 @@
+<div th:fragment="viewAct">
+	<h4><span th:utext="${act.name}"></span></h4>
+	<div th:if="${#lists.isEmpty(act.sections)}">
+			No Sections Found.
+		</div>
+	<div th:unless="${#lists.isEmpty(act.sections)}">
+		<div th:insert="fragments/viewSectionSet.html :: viewSectionSet(sections=${act.sections})"></div>
+	</div>
+</div>
