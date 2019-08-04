@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,7 +24,7 @@ public class Act {
 	@Column
 	private String name;
 	// Procedure owning this Act
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="procedure_id_pk", nullable=true)
 	private Procedure procedure;
 	@Column
@@ -41,10 +42,16 @@ public class Act {
 	}
 
 	public Integer getId() {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		return id;
 	}
 
 	public void setId(Integer id) {
+		if (id != null) {
+			setStringId(id.toString());
+		}
 		this.id = id;
 	}
 

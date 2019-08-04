@@ -5,18 +5,25 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.safebusiness.Act;
 import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.Datatype;
+import org.safebusiness.Procedure;
+import org.safebusiness.Process;
 import org.safebusiness.Section;
 import org.safebusiness.api.APIUtils;
 import org.safebusiness.api.repo.ActRepository;
 import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ActionRepository;
 import org.safebusiness.api.repo.ArticleRepository;
+import org.safebusiness.api.repo.ProcedureRepository;
+import org.safebusiness.api.repo.ProcessRepository;
 import org.safebusiness.api.repo.SectionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +33,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MainController {
+
+	Logger log = LoggerFactory.getLogger(MainController.class);
 
 	@Autowired
 	ArticleRepository articleRepo;
@@ -37,6 +46,10 @@ public class MainController {
 	ActionRepository actionRepo;
 	@Autowired
 	ActRepository actRepo;
+	@Autowired
+	ProcedureRepository procedureRepo;
+	@Autowired
+	ProcessRepository processRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index() {
@@ -48,9 +61,10 @@ public class MainController {
 		return "redirect:safebusiness/index";
 	}
 	
-	/**
-	 * Article GetMapping and PostMApping
-	 */
+	/////////////////////////////////////////////
+	// Article
+	////////////////////////////////////////////
+	
 	@GetMapping("safebusiness/article/{id}")
 	public String createOrViewArticle(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -83,32 +97,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/addArticle/article/{id}")
 	public String createOrViewArticleDuplicateHandler(Model model, @PathVariable("id") String id) {
-		if (id != null) {
-			try {
-				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
-					Article article = articleRepo.findById(Integer.parseInt(id)).get();
-					// Hack around to have `stringId` initialized
-					// Tired of writing dirty code :-(
-					article.getId();
-					model.addAttribute("article", article);
-					model.addAttribute("inViewMode", true);
-					// children
-					model.addAttribute("articles", article.getChildArticles() != null ? article.getChildArticles() : new ArrayList<>());
-				} else {
-					model.addAttribute("inViewMode", false);
-					model.addAttribute("article", new Article());
-				}
-			} catch(NumberFormatException ex) {
-				model.addAttribute("inViewMode", false);
-				model.addAttribute("article", new Article());
-			}
-			
-		} else {
-			model.addAttribute("inViewMode", false);
-			model.addAttribute("article", new Article());
-		}
-		
-		return "article";
+		return createOrViewArticle(model, id);
 	}
 	
 	@PostMapping("safebusiness/addArticle/{action}")
@@ -142,9 +131,10 @@ public class MainController {
 		return "listArticles";
 	}
 			
-	/*
-	 * Attributes GetMappping and PostMapping
-	 */
+	/////////////////////////////////////////////
+	// Attribute
+	////////////////////////////////////////////
+	
 	@GetMapping("safebusiness/listAttributes")
 	public String listAttributes(Model model) {
 		Iterable<ActionAttribute> interator = attributeRepo.findAll();
@@ -203,38 +193,13 @@ public class MainController {
 	// Another hack around here
 	@GetMapping("safebusiness/addAttribute/viewAttribute/{id}")
 	public String viewAttributeDuplicateHandler(Model model, @PathVariable("id") String id) {
-		if (id != null) {
-			try {
-				ActionAttribute actionAtt = APIUtils.getActionAttributeById(Integer.parseInt(id), attributeRepo.findAll());
-				if (actionAtt != null) {
-					model.addAttribute("attribute", actionAtt);
-					model.addAttribute("inViewMode", true);
-					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
-				} else {
-					model.addAttribute("inViewMode", false);
-					model.addAttribute("attribute", new ActionAttribute());
-					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
-				}
-			} catch(NumberFormatException ex) {
-				model.addAttribute("inViewMode", false);
-				model.addAttribute("attribute", new ActionAttribute());
-				model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
-			}
-			
-		} else {
-			model.addAttribute("inViewMode", false);
-			model.addAttribute("attribute", new ActionAttribute());
-			model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
-		}
-		
-		return "attribute";
+		return createOrViewAttribute(model, id);
 	}
 	
-	/*
-	 * Section GetMapping and PostMapping
-	 *
-	 */
-
+	/////////////////////////////////////////////
+	// Section
+	////////////////////////////////////////////
+	
 	@GetMapping("safebusiness/section/{id}")
 	public String createOrViewSection(Model model, @PathVariable("id") String id) {
 		if (id != null) {
@@ -279,7 +244,7 @@ public class MainController {
 			article.setSection(section);
 		}
 		section.setArticles(articles);
-		List<Section> subSecs = APIUtils.parseSectionString(section.getArticleCommaSeparatedList(), sectionRepo);
+		List<Section> subSecs = APIUtils.parseSectionString(section.getChildrenCommaSeparatedList(), sectionRepo);
 		for (Section sec : subSecs) {
 			sec.setParent(section);
 		}
@@ -302,40 +267,20 @@ public class MainController {
 		
 	@GetMapping("safebusiness/addSection/viewSection/{id}")
 	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id) {
-		if (id != null) {
-			try {
-				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
-				if (section != null) {
-					model.addAttribute("section", sectionRepo.findById(Integer.parseInt(id)).get());
-					model.addAttribute("inViewMode", true);
-				} else {
-					model.addAttribute("inViewMode", false);
-					model.addAttribute("section", new Section());
-				}
-			} catch(NumberFormatException ex) {
-				model.addAttribute("inViewMode", false);
-				model.addAttribute("section", new Section());
-			}
-			
-		} else {
-			model.addAttribute("inViewMode", false);
-			model.addAttribute("section", new Section());
-		}
-		
-		return "section";
+		return createOrViewSection(model, id);
 	}
 	
-	/*
-	 * Action GetMapping and PostMapping Bellow
-	 * 
-	 */
+	/////////////////////////////////////////////
+	// Action
+	////////////////////////////////////////////
+	
 	@GetMapping("safebusiness/listActions")
 	public String listActions(Model model) {
 		Iterable<Action> interator = actionRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<Action> actions = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
 		model.addAttribute("actions", actions);
-		return "listAction";
+		return "listActions";
 	}
 	
 	@GetMapping("safebusiness/action/{id}")
@@ -346,6 +291,7 @@ public class MainController {
 				if (action != null) {
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
+					model.addAttribute("attributes", action.getAttributes());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("action", new Action());
@@ -374,6 +320,11 @@ public class MainController {
 			ex.printStackTrace();
 			// chill, stuff happens.
 		}
+		List<ActionAttribute> attributes = APIUtils.parseAttributeString(action.getAttributeNamesString(), attributeRepo);
+		for (ActionAttribute att : attributes) {
+			att.setAction(action);
+		}
+		action.setAttributes(attributes);
 		Action savedAction = actionRepo.save(action);
 		if (savedAction != null) {
 			return "redirect:viewAction/" + savedAction.getId();
@@ -383,35 +334,14 @@ public class MainController {
 	
 	// Another hack around here
 	@GetMapping("safebusiness/addAction/viewAction/{id}")
-	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {
-		if (id != null) {
-			try {
-				actionRepo.findAll(); // Leave as is
-				Action action = actionRepo.findById(Integer.parseInt(id)).isPresent() ? actionRepo.findById(Integer.parseInt(id)).get() : null;
-				if (action != null) {
-					model.addAttribute("action", action);
-					model.addAttribute("inViewMode", true);
-				} else {
-					model.addAttribute("inViewMode", false);
-					model.addAttribute("action", new Action());
-				}
-			} catch(Exception ex) {
-				ex.printStackTrace();
-				model.addAttribute("inViewMode", false);
-				model.addAttribute("action", new Action());
-			} 
-			
-		} else {
-			model.addAttribute("inViewMode", false);
-			model.addAttribute("action", new Action());
-		}
-		
-		return "action";
+	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {		
+		return createOrViewAction(model, id);
 	}
 	
-	/*
-	 * Act GetMapping and PostMapping
-	 */
+	/////////////////////////////////////////////
+	// Act
+	////////////////////////////////////////////
+	
 	@GetMapping("safebusiness/listActs")
 	public String listActs(Model model) {
 		Iterable<Act> interator = actRepo.findAll();
@@ -430,6 +360,8 @@ public class MainController {
 					model.addAttribute("act", act);
 					model.addAttribute("inViewMode", true);
 					model.addAttribute("sections", act.getSections() != null ? act.getSections() : new ArrayList<>());
+					// Make sure `stringId` is initialized
+					act.getId();
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("act", new Act());
@@ -471,33 +403,160 @@ public class MainController {
 	
 	// Another hack around here
 	@GetMapping("safebusiness/addAct/viewAct/{id}")
-	public String viewActDuplicateHandler(Model model, @PathVariable("id") String id) {
+	public String viewActDuplicateHandler(Model model, @PathVariable("id") String id) {		
+		return createOrViewAct(model, id);
+	}
+	
+	////////////////////////////////////
+	// Procedure
+	///////////////////////////////////
+	
+	@GetMapping("safebusiness/procedure/{id}")
+	public String createOrViewProcedure(Model model, @PathVariable("id") String id) {
 		if (id != null) {
 			try {
-				Act act = APIUtils.getActById(Integer.parseInt(id), actRepo.findAll());
-				if (act != null) {
-					model.addAttribute("act", act);
+				Procedure procedure = procedureRepo.findById(Integer.parseInt(id)).get();
+				if (procedure != null) {
+					model.addAttribute("procedure", procedure);
 					model.addAttribute("inViewMode", true);
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+					model.addAttribute("acts", procedure.getActs() != null ? procedure.getActs() : new ArrayList<>());
+					model.addAttribute("action", procedure.getAction());
+					// Make sure stringId is set
+					procedure.getId();
 				} else {
 					model.addAttribute("inViewMode", false);
-					model.addAttribute("act", new Act());
-					//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+					model.addAttribute("procedure", new Procedure());
 				}
 			} catch(NumberFormatException ex) {
 				model.addAttribute("inViewMode", false);
-				model.addAttribute("act", new Act());
-				//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				model.addAttribute("procedure", new Procedure());
 			}
 			
 		} else {
 			model.addAttribute("inViewMode", false);
-			model.addAttribute("act", new Act());
-			//model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			model.addAttribute("procedure", new Procedure());
 		}
 		
-		return "act";
+		return "procedure";
 	}
 	
+	@GetMapping("safebusiness/addProcedure/viewProcedure/{id}")
+	public String createOrViewDuplicateProcedureRouteHandler(Model model, @PathVariable("id") String id) {
+		return createOrViewProcedure(model, id);
+	}
+	
+	@PostMapping("safebusiness/addProcedure/{string}")
+	public String addProcedure(@Valid Procedure procedure, @PathVariable("string") String action) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			procedure.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+		}
+		List<Act> acts = APIUtils.parseActString(procedure.getActNamesString(), actRepo);
+		for (Act act : acts) {
+			act.setProcedure(procedure);
+		}
+		if (!acts.isEmpty()) {
+			procedure.setActs(acts);
+		} 
+		// set action
+		if (StringUtils.isNotBlank(procedure.getActionName())) {
+			Action ac = actionRepo.findByName(procedure.getActionName());
+			if (ac != null) {
+				ac.setProcedure(procedure);
+				procedure.setAction(ac);
+			} else {
+				log.error("Failed to find Action :" + procedure.getActionName());
+			}
+		}
+		
+		Procedure savedProcedure = procedureRepo.save(procedure);
+		if (savedProcedure != null) {
+			return "redirect:viewProcedure/" + savedProcedure.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	@GetMapping("safebusiness/listProcedures")
+	public String listProcedures(Model model) {
+		List<Procedure> procedures = APIUtils.careFullyCastIterableToList(procedureRepo.findAll());
+		model.addAttribute("procedures", procedures);
+		return "listProcedures";
+	}
+	
+	///////////////////////////////////////////
+	// Process
+	//////////////////////////////////////////
+	
+	@GetMapping("safebusiness/process/{id}")
+	public String createOrViewProcess(Model model, @PathVariable("id") String id) {
+		if (id != null) {
+			try {
+				Process process = processRepo.findById(Integer.parseInt(id)).get();
+				if (process != null) {
+					model.addAttribute("process", process);
+					model.addAttribute("inViewMode", true);
+					model.addAttribute("procedures", process.getProcedures() != null ? process.getProcedures() : new ArrayList<>());
+					// Make sure stringId is set
+					process.getId();
+				} else {
+					model.addAttribute("inViewMode", false);
+					model.addAttribute("process", new Process());
+				}
+			} catch(NumberFormatException ex) {
+				model.addAttribute("inViewMode", false);
+				model.addAttribute("process", new Process());
+			}
+			
+		} else {
+			model.addAttribute("inViewMode", false);
+			model.addAttribute("process", new Process());
+		}
+		
+		return "process";
+	}
+	
+	@GetMapping("safebusiness/addProcess/viewProcess/{id}")
+	public String createOrViewDuplicateProcessRouteHandler(Model model, @PathVariable("id") String id) {
+		return createOrViewProcess(model, id);
+	}
+	
+	@PostMapping("safebusiness/addProcess/{string}")
+	public String addProcess(@Valid Process process, @PathVariable("string") String action) {
+		try {
+			// Make updating possible
+			// TODO This has to be done to all domains supporting view modes
+			process.setId(Integer.parseInt(action));
+						
+		} catch(NumberFormatException ex) {
+			// chill, stuff happens.
+			log.error("Error parsing ID", ex);
+		}
+		List<Procedure> procedures = APIUtils.parseProcedureString(process.getProcedureNames(), procedureRepo);
+		for (Procedure proc : procedures) {
+			proc.setProcess(process);
+		}
+		if (!procedures.isEmpty()) {
+			process.setProcedures(procedures);
+		} else {
+			log.warn("Found no Procedures for Process:" + process.getProcessName());
+		}
+		
+		Process savedProcess = processRepo.save(process);
+		if (savedProcess != null) {
+			return "redirect:viewProcess/" + savedProcess.getId();
+		}
+		return "redirect:safebusiness/index";
+	}
+	
+	@GetMapping("safebusiness/listProcesses")
+	public String listProcess(Model model) {
+		List<Process> processes = APIUtils.careFullyCastIterableToList(processRepo.findAll());
+		model.addAttribute("processes", processes);
+		return "listProcesses";
+	}
 	
 }

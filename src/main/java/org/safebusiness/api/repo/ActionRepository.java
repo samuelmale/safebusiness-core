@@ -1,6 +1,7 @@
 package org.safebusiness.api.repo;
 
 import org.safebusiness.Action;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -15,5 +16,8 @@ import org.springframework.data.repository.CrudRepository;
  */
 
 public interface ActionRepository extends CrudRepository<Action, Integer> {
-
+	@Query(
+			value = "SELECT * FROM action a WHERE a.name = ?1", 
+			nativeQuery = true)
+	public Action findByName(String name);
 }

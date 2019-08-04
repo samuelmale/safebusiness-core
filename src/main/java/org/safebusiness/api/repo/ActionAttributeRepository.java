@@ -1,6 +1,7 @@
 package org.safebusiness.api.repo;
 
 import org.safebusiness.ActionAttribute;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -14,5 +15,9 @@ import org.springframework.data.repository.CrudRepository;
  *
  */
 public interface ActionAttributeRepository extends CrudRepository<ActionAttribute, Integer> {
-
+	
+	@Query(
+			value = "SELECT * FROM action_attribute a WHERE a.name = ?1", 
+			nativeQuery = true)
+	public ActionAttribute findByName(String name);
 }

@@ -30,30 +30,43 @@
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Interface
+        Manage Metadata
       </div>
 
-      <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcess" aria-expanded="true" aria-controls="collapseProcess">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Processes</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseProcess" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Actions:</h6>
-            <a class="collapse-item" href="#">View Processes</a>
-            <a class="collapse-item" href="#">Create New Process</a>
+            <a class="collapse-item" href="/safebusiness/procedure/new">Create Process</a>
+            <a class="collapse-item" href="/safebusiness/listProcesses">View Processes</a>
           </div>
         </div>
       </li>
 
 	  <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcedure" aria-expanded="true" aria-controls="collapseProcedure">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Manage Procedures</span>
+        </a>
+        <div id="collapseProcedure" class="collapse" aria-labelledby="collapseProcedure" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Acts:</h6>
+            <a class="collapse-item" href="/safebusiness/procedure/new">New Procedure</a>
+            <a class="collapse-item" href="/safebusiness/listProcedures">View Procedures</a>
+          </div>
+        </div>
+      </li>
+      
+	  <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttribute" aria-expanded="true" aria-controls="collapseAttribute">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Attributes</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseAttribute" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Actions:</h6>
             <a class="collapse-item" href="/safebusiness/listAttributes">View Attributes</a>
@@ -62,13 +75,12 @@
         </div>
       </li>
       
-      <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseArticle" aria-expanded="true" aria-controls="collapseArticle">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Articles</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseArticle" class="collapse" aria-labelledby="collapseArticle" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Actions:</h6>
             <a class="collapse-item" href="/safebusiness/article/new">New Article</a>
@@ -77,13 +89,12 @@
         </div>
       </li>
       
-      <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSection" aria-expanded="true" aria-controls="collapseSection">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Sections</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseSection" class="collapse" aria-labelledby="collapseSection" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Sections:</h6>
             <a class="collapse-item" href="/safebusiness/section/new">New Section</a>
@@ -92,13 +103,12 @@
         </div>
       </li>
 
- <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAction" aria-expanded="true" aria-controls="collapseAction">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Actions</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseAction" class="collapse" aria-labelledby="collapseAction" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Actions:</h6>
             <a class="collapse-item" href="/safebusiness/action/new">New Action</a>
@@ -107,13 +117,12 @@
         </div>
       </li>
 
-<!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAct" aria-expanded="true" aria-controls="collapseAct">
           <i class="fas fa-fw fa-cog"></i>
           <span>Manage Acts</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseAct" class="collapse" aria-labelledby="collapseAct" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Acts:</h6>
             <a class="collapse-item" href="/safebusiness/act/new">New Act</a>
@@ -121,52 +130,7 @@
           </div>
         </div>
       </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider">
-
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Addons
-      </div>
-
-      <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="404.html">404 Page</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
-          </div>
-        </div>
-      </li>
-
-      <!-- Nav Item - Charts -->
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
-      </li>
-
-      <!-- Nav Item - Tables -->
-      <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-
+      
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

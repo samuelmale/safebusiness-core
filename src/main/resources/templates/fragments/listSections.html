@@ -1,12 +1,12 @@
 <div th:fragment="listsections">
 <div id="" class="container">
 	<div th:if="${#lists.isEmpty(sections)}">
-		No Available sectionss
+		No Available sections
 	</div>
 	<div id="sbist" th:unless="${#lists.isEmpty(sections)}">
 		<ul class="list-group">
 		  <li class="list-group-item" th:each="section : ${sections}">
-		  	<a th:href="@{section/{action}(action=${section.id})}">Section Name : <span th:utext="${section.name}"></span></a>
+		  	<a th:href="@{/safebusiness/section/{action}(action=${section.id})}"><span th:utext="${section.name}"></span></a>
 		  </li>
 		</ul>
 		

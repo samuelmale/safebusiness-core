@@ -1,0 +1,21 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<div th:insert="fragments/listProcesses.html :: listProcesses"></div>
+				</div>
+			</div>
+			<!-- Footer -->
+			<div th:insert="fragments/footer.html :: footer"></div>
+		</div>
+		
+	</div>
+	
+</body>
