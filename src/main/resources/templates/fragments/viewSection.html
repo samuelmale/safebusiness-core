@@ -1,0 +1,6 @@
+<div th:fragment="viewSection">
+	<fieldset>
+		<legend><span th:utext="${_section.name}"></span></legend>
+		<div th:insert="fragment/viewArticleSet.html :: viewArticleSet(articles=${_section.articles})"></div>
+	</fieldset>
+</div>

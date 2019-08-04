@@ -1,0 +1,18 @@
+<div th:fragment="viewArticleSet">
+	<ul class="list-group">
+		<li class="list-group-item" th:each="article : ${articles}">
+			<div th:insert="fragments/viewArticle.html :: viewArticle(_article=${article})"></div>			
+			<div th:unless="${#lists.isEmpty(article.childArticles)}">
+				<ul>
+					<li class="list-group-item" th:each="child : ${article.childArticles}">
+						<div th:insert="fragments/viewArticle.html :: viewArticle(_article=${child})"></div>			
+					
+					</li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+</div>
+				
+		
+	

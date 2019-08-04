@@ -1,0 +1,20 @@
+<div th:fragment="viewSectionSet">
+	<ul class="list-group">
+		<li class="list-group-item" th:each="section : ${sections}">
+			<h5>Section[<span th:utext="${section.name}"></span>]</h5>
+			<div th:if="${#lists.isEmpty(section.articles)}">
+				No Articles Found.
+			</div>
+			<div th:unless="${#lists.isEmpty(section.articles)}">
+				<div th:insert="fragments/viewArticleSet.html :: viewArticleSet(articles=${section.articles})"></div>
+			</div>
+			<div th:unless="${#lists.isEmpty(section.subSections)}">
+				<ul>
+					<li class="list-group-item" th:each="child : ${section.subSections}">
+						<div th:insert="fragments/viewSection.html :: viewSection(_section=${child})"></div>
+					</li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+</div>
