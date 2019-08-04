@@ -36,7 +36,7 @@ public class Section {
 	private Section parent;
 	// The Act owning this section
 	@ManyToOne(fetch=FetchType.LAZY)
-  @JoinColumn(name="act_id_fk_silly", nullable=true)
+    @JoinColumn(name="act_id_fk_silly", nullable=true)
 	private Act act;
 	
 	//This a hack around having this @id in String format

@@ -1,0 +1,16 @@
+<div th:fragment="listProcedures">
+	<div id="" class="container">
+		<div th:if="${#lists.isEmpty(procedures)}">
+			No Available Procedures
+		</div>
+		<div id="" th:unless="${#lists.isEmpty(procedures)}">
+			<ul class="list-group">
+			  <li class="list-group-item" th:each="procedure : ${procedures}">
+			  	<a th:href="@{/safebusiness/procedure/{string}(string=${procedure.id})}"><span th:utext="${procedure.name}"></span></a>
+			  </li>
+			</ul>
+			
+		</div>
+		
+	</div>
+</div>

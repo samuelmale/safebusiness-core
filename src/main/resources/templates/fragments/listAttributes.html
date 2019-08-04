@@ -3,10 +3,10 @@
 		<div th:if="${#lists.isEmpty(attributes)}">
 			No Available attributes
 		</div>
-		<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
+		<div id="" th:unless="${#lists.isEmpty(attributes)}">
 			<ul class="list-group">
 			  <li class="list-group-item" th:each="att : ${attributes}">
-			  	<a th:href="@{attribute/{action}(action=${att.id})}"><span th:utext="${att.name}"></span></a>
+			  	<a th:href="@{/safebusiness/attribute/{action}(action=${att.id})}"><span th:utext="${att.name}"></span></a>
 			  </li>
 			</ul>
 

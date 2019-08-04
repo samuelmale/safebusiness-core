@@ -1,0 +1,70 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4 th:if="${inViewMode} == true"><span th:utext="${procedure.name}"></span></h4>
+					<h4 th:unless="${inViewMode} == true">New Procedure</h4>
+					<div>	
+						<form action="#" th:action="@{/safebusiness/addProcedure/{string}(string=${procedure.stringId} == null ? 'new' : ${procedure.stringId})}" th:object="${procedure}" method="post" id="sb-new-procedure">
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="name">Procedure Name:</label>
+									<input type="text" th:field="*{name}" placeholder="Procedure Name" class="form-control" />
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="name">Action:</label>
+									<input type="text" th:field="*{actionName}" placeholder="Action Name" class="form-control" />
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="name">Add Acts:</label>
+									<input type="text" th:field="*{actNamesString}" placeholder="Comma delimited Act Names" class="form-control" />
+								</div>
+							</div>
+								
+							<div th:if="${inViewMode} == true">
+								<hr>
+								<div th:if="${action} != null">
+									<h6>Procedure Action:</h6>
+									<a th:href="@{/safebusiness/action/{action}(action=${action.id})}"><span th:utext="${action.name}"></span></a>
+								</div>
+								<br>
+								<h6>Acts:</h6>
+								<div th:insert="fragments/listActs.html :: listacts"></div>
+							</div>
+							<br>
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+				
+							</div>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+			<!-- Footer -->
+			<div th:insert="fragments/footer.html :: footer"></div>
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-procedure').submit();
+		});
+	</script>
+	
+	
+</body>

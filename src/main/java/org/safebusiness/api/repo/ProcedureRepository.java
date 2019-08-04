@@ -1,6 +1,7 @@
 package org.safebusiness.api.repo;
 
 import org.safebusiness.Procedure;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -15,4 +16,8 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ProcedureRepository extends CrudRepository<Procedure, Integer> {
 
+	@Query(
+			value = "SELECT * FROM safebusiness_procedure p WHERE p.name = ?1", 
+			nativeQuery = true)
+	public Procedure findByName(String name);
 }

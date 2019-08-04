@@ -41,7 +41,7 @@ public class Action implements Customizable<ActionAttribute> {
 	// I hate casting in thymeleafe templates
 	@Column
 	private String stringId;
-	@Column
+	@Column(unique=true)
 	private String name;
 	
 	@Transient

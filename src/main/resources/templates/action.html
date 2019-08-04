@@ -30,19 +30,21 @@
 							<div class="form-row">
 								<div class="form-group col-sm-6">
 									<label for="text">Add Attributes:</label>
-									<input type="text" th:field="*{attributeNamesString}" placeholder="Comma delimitted Attribute Names" class="form-control" />
+									<input type="text" th:field="*{attributeNamesString}" placeholder="Comma delimited Attribute Names" class="form-control" />
 								</div>
 							</div>
 							<!-- Should apply while in view mode -->
-							<div th:if="${inViewMode} == true" class="form-row">
+							<div th:if="${inViewMode} == true">
+								<hr>
+								<h6>Attributes:</h6>
 								<div id="" class="container">
 								<div th:if="${#lists.isEmpty(attributes)}">
 									No Available attributes
 								</div>
 								<div id="sbist" th:unless="${#lists.isEmpty(attributes)}">
 									<ul class="list-group">
-									  <li class="list-group-item" th:each="article : ${articles}">
-									  	<a th:href="@{attribute/{action}(action=${attribute.id})}"><span th:utext="${attribute.name}"></span></a>
+									  <li class="list-group-item" th:each="att : ${attributes}">
+									  	<a th:href="@{/safebusiness/attribute/{action}(action=${att.id})}"><span th:utext="${att.name}"></span></a>
 									  </li>
 									</ul>
 									
