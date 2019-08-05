@@ -193,11 +193,11 @@ public class MainController {
 		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
-		Iterable<ActionAttribute> interator = attributeRepo.findAll();
+		Iterable<AttributeType> interator = attTypeRepo.findAll();
 		@SuppressWarnings("unchecked")
-		List<ActionAttribute> attributes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
-		model.addAttribute("attributes", attributes);
-		return "listAttributes";
+		List<AttributeType> attributeTypes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
+		model.addAttribute("attributeTypes", attributeTypes);
+		return "listAttributeTypes";
 	}
 	
 	@GetMapping("safebusiness/attributeType/{id}")
@@ -209,6 +209,9 @@ public class MainController {
 			try {
 				AttributeType type = attTypeRepo.findById(Integer.parseInt(id)).get();
 				if (type != null) {
+					// Make sure `stringId` is set
+					// I hate this, I think a better strategy should be bought
+					type.getId();
 					model.addAttribute("attributeType", type);
 					model.addAttribute("inViewMode", true);
 				} else {
@@ -229,18 +232,18 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addAttributeType/{string}")
-	public String addAttributeType(@Valid ActionAttribute attribute, @PathVariable("string") String action) {
+	public String addAttributeType(@Valid AttributeType type, @PathVariable("string") String action) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
-			attribute.setId(Integer.parseInt(action));
+			type.setId(Integer.parseInt(action));
 						
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
 		}		
-		ActionAttribute savedAttribute = attributeRepo.save(attribute);
-		if (savedAttribute != null) {
-			return "redirect:viewAttribute/" + savedAttribute.getId();
+		AttributeType savedtype = attTypeRepo.save(type);
+		if (savedtype != null) {
+			return "redirect:/safebusiness/attributeType/" + savedtype.getId();
 		}
 		return "redirect:safebusiness/index";
 	}
@@ -361,7 +364,7 @@ public class MainController {
 				if (action != null) {
 					model.addAttribute("action", action);
 					model.addAttribute("inViewMode", true);
-					model.addAttribute("attributes", action.getAttributes());
+					model.addAttribute("attributeTypes", action.getAttributeTypes());
 				} else {
 					model.addAttribute("inViewMode", false);
 					model.addAttribute("action", new Action());
@@ -380,7 +383,7 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addAction/{string}")
-	public String addAction(@Valid Action action, @PathVariable("string") String routeAction, HttpServletResponse httpResponse) {
+	public String addAction(@Valid Action action, @PathVariable("string") String routeAction) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
@@ -390,12 +393,11 @@ public class MainController {
 			ex.printStackTrace();
 			// chill, stuff happens.
 		}
-		List<ActionAttribute> attributes = APIUtils.parseAttributeString(action.getAttributeNamesString(), attributeRepo);
-		for (ActionAttribute att : attributes) {
+		List<AttributeType> attributeTypes = APIUtils.parseAttributeTypeString(action.getAttributeNamesString(), attTypeRepo);
+		for (AttributeType att : attributeTypes) {
 			att.setAction(action);
 		}
-		// TODO : https://trello.com/c/V3htZorj/16-in-controller-just-append-an-item-to-the-list-instead-of-just-calling-setlistname
-		action.setAttributes(attributes);
+		action.setAttributeTypes(attributeTypes);
 		Action savedAction = actionRepo.save(action);
 		if (savedAction != null) {
 			return "redirect:viewAction/" + savedAction.getId();

@@ -27,8 +27,11 @@ public class Action implements Customizable<ActionAttribute> {
 //	@Column(name="instructions")
 	@Transient // As for now
 	private List<String> instructions;
-	@OneToMany(mappedBy="action")
+	@Transient
+	//@OneToMany(mappedBy="action")
 	private List<ActionAttribute> attributes;
+	@OneToMany(mappedBy="action")
+	private List<AttributeType> attributeTypes;
 	// Procedure owning this Action
 	@OneToOne
 	@JoinColumn(name="procedure_id", nullable=true)
@@ -132,6 +135,17 @@ public class Action implements Customizable<ActionAttribute> {
 
 	public void setAttributeNamesString(String attributeNamesString) {
 		this.attributeNamesString = attributeNamesString;
+	}
+
+	public List<AttributeType> getAttributeTypes() {
+		return attributeTypes;
+	}
+
+	public void setAttributeTypes(List<AttributeType> attributeTypes) {
+		if (this.attributeTypes == null) {
+			this.attributeTypes = new ArrayList<>();
+		}
+		this.attributeTypes.addAll(attributeTypes);
 	}
 
 }
