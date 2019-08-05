@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.safebusiness.Procedure;
 import org.safebusiness.Process;
 import org.safebusiness.Section;
 import org.safebusiness.api.APIUtils;
+import org.safebusiness.api.Context;
 import org.safebusiness.api.repo.ActRepository;
 import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ActionRepository;
@@ -28,9 +30,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {
@@ -51,15 +57,58 @@ public class MainController {
 	ProcedureRepository procedureRepo;
 	@Autowired
 	ProcessRepository processRepo;
+	@Autowired
+	Context applicationContext;
+	
 	
 	@GetMapping("safebusiness/index")
-	public String index() {
+	public String index(HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		return "index";
 	}
 	
+	
+	
 	@GetMapping("safebusiness")
-	public String baseUrl() {
+	public String baseUrl(HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		return "redirect:safebusiness/index";
+	}
+	
+	////////////////////////////////////////////
+	//Login
+	///////////////////////////////////////////
+	
+	
+	
+	@GetMapping("safebusiness/login")
+	public String getLogin() {
+		return "login";
+	}
+	
+	@PostMapping("safebusiness/login")
+	public String login(
+		@RequestParam("username") String username,
+		@RequestParam("password") String password,
+		HttpSession session,
+		ModelMap modelMap) {
+		if(applicationContext.authenticate(username, password)) {
+			session.setAttribute("username", username);
+			return "index";
+		} else {
+			modelMap.put("error", "Invalid Account");
+			return "safebusiness/login";
+		}
+	}
+
+	@GetMapping("safebusiness/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("username");
+		return "redirect:/safebusiness/login";
 	}
 	
 	/////////////////////////////////////////////
@@ -125,7 +174,10 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/listArticles")
-	public String listArticles(Model model) {
+	public String listArticles(Model model, HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Iterable<Article> interator = articleRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<Article> articles = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
@@ -203,7 +255,10 @@ public class MainController {
 	////////////////////////////////////////////
 	
 	@GetMapping("safebusiness/section/{id}")
-	public String createOrViewSection(Model model, @PathVariable("id") String id) {
+	public String createOrViewSection(Model model, @PathVariable("id") String id, HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				Section section = APIUtils.getSectionById(Integer.parseInt(id), sectionRepo.findAll());
@@ -260,7 +315,10 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/listSections")
-	public String listSections(Model model) {
+	public String listSections(Model model, HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Iterable<Section> interator = sectionRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<Section> sections = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
@@ -269,8 +327,8 @@ public class MainController {
 	}
 		
 	@GetMapping("safebusiness/addSection/viewSection/{id}")
-	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id) {
-		return createOrViewSection(model, id);
+	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id,HttpSession session) {
+		return createOrViewSection(model, id, session);
 	}
 	
 	/////////////////////////////////////////////
@@ -278,7 +336,10 @@ public class MainController {
 	////////////////////////////////////////////
 	
 	@GetMapping("safebusiness/listActions")
-	public String listActions(Model model) {
+	public String listActions(Model model, HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Iterable<Action> interator = actionRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<Action> actions = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
@@ -347,7 +408,10 @@ public class MainController {
 	////////////////////////////////////////////
 	
 	@GetMapping("safebusiness/listActs")
-	public String listActs(Model model) {
+	public String listActs(Model model, HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Iterable<Act> interator = actRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<Act> acts = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
@@ -417,7 +481,10 @@ public class MainController {
 	///////////////////////////////////
 	
 	@GetMapping("safebusiness/procedure/{id}")
-	public String createOrViewProcedure(Model model, @PathVariable("id") String id) {
+	public String createOrViewProcedure(Model model, @PathVariable("id") String id,HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				Procedure procedure = procedureRepo.findById(Integer.parseInt(id)).get();
@@ -446,8 +513,8 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/addProcedure/viewProcedure/{id}")
-	public String createOrViewDuplicateProcedureRouteHandler(Model model, @PathVariable("id") String id) {
-		return createOrViewProcedure(model, id);
+	public String createOrViewDuplicateProcedureRouteHandler(Model model, @PathVariable("id") String id,HttpSession session) {
+		return createOrViewProcedure(model, id, session);
 	}
 	
 	@PostMapping("safebusiness/addProcedure/{string}")
@@ -487,7 +554,10 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/listProcedures")
-	public String listProcedures(Model model) {
+	public String listProcedures(Model model,HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		List<Procedure> procedures = APIUtils.careFullyCastIterableToList(procedureRepo.findAll());
 		model.addAttribute("procedures", procedures);
 		return "listProcedures";
@@ -571,7 +641,10 @@ public class MainController {
 	///////////////////////////////////////
 	
 	@GetMapping("safebusiness/viewAct/{string}")
-	public String viewAct(Model model, @PathVariable("string") String action) {
+	public String viewAct(Model model, @PathVariable("string") String action,HttpSession session) {
+		if(!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		try {
 			if (actRepo.findById(Integer.parseInt(action)).isPresent()) {
 				Act act = actRepo.findById(Integer.parseInt(action)).get();
@@ -588,4 +661,10 @@ public class MainController {
 		}
 		return "viewAct";
 	}
+	
+	//Checks whether current HttpSession is authenticated
+	private boolean isAuthenticatedSession(HttpSession session) {
+	      return session.getAttribute("username") != null;
+	}
+
 }
