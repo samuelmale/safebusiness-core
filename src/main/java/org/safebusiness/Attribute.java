@@ -3,8 +3,11 @@ package org.safebusiness;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -20,7 +23,8 @@ public abstract class Attribute {
 	@Transient
 	private Customizable owner;
 	// Attribute type
-	@Transient
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="attribute_type_id_fk", nullable=true)
 	private AttributeType attributeType;
 	// Attribute value
 	@Transient

@@ -1,7 +1,6 @@
 package org.safebusiness.web.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,7 +11,7 @@ import org.safebusiness.Act;
 import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
-import org.safebusiness.Datatype;
+import org.safebusiness.AttributeType;
 import org.safebusiness.Procedure;
 import org.safebusiness.Process;
 import org.safebusiness.Section;
@@ -22,6 +21,7 @@ import org.safebusiness.api.repo.ActRepository;
 import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ActionRepository;
 import org.safebusiness.api.repo.ArticleRepository;
+import org.safebusiness.api.repo.AttributeTypeRepository;
 import org.safebusiness.api.repo.ProcedureRepository;
 import org.safebusiness.api.repo.ProcessRepository;
 import org.safebusiness.api.repo.SectionRepository;
@@ -34,8 +34,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -59,21 +57,20 @@ public class MainController {
 	ProcessRepository processRepo;
 	@Autowired
 	Context applicationContext;
-	
+	@Autowired
+	AttributeTypeRepository attTypeRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index(HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		return "index";
 	}
 	
-	
-	
 	@GetMapping("safebusiness")
 	public String baseUrl(HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		return "redirect:safebusiness/index";
@@ -82,8 +79,6 @@ public class MainController {
 	////////////////////////////////////////////
 	//Login
 	///////////////////////////////////////////
-	
-	
 	
 	@GetMapping("safebusiness/login")
 	public String getLogin() {
@@ -98,7 +93,7 @@ public class MainController {
 		ModelMap modelMap) {
 		if(applicationContext.authenticate(username, password)) {
 			session.setAttribute("username", username);
-			return "index";
+			return "redirect:/safebusiness/index";
 		} else {
 			modelMap.put("error", "Invalid Account");
 			return "safebusiness/login";
@@ -108,6 +103,7 @@ public class MainController {
 	@GetMapping("safebusiness/logout")
 	public String logout(HttpSession session) {
 		session.removeAttribute("username");
+		// TODO : Logout from the applicationContext
 		return "redirect:/safebusiness/login";
 	}
 	
@@ -116,7 +112,10 @@ public class MainController {
 	////////////////////////////////////////////
 	
 	@GetMapping("safebusiness/article/{id}")
-	public String createOrViewArticle(Model model, @PathVariable("id") String id) {
+	public String createOrViewArticle(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				if (articleRepo.findById(Integer.parseInt(id)).isPresent()) {
@@ -146,8 +145,8 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/addArticle/article/{id}")
-	public String createOrViewArticleDuplicateHandler(Model model, @PathVariable("id") String id) {
-		return createOrViewArticle(model, id);
+	public String createOrViewArticleDuplicateHandler(Model model, @PathVariable("id") String id, HttpSession session) {
+		return createOrViewArticle(model, id, session);
 	}
 	
 	@PostMapping("safebusiness/addArticle/{action}")
@@ -175,7 +174,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/listArticles")
 	public String listArticles(Model model, HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		Iterable<Article> interator = articleRepo.findAll();
@@ -184,13 +183,16 @@ public class MainController {
 		model.addAttribute("articles", articles);
 		return "listArticles";
 	}
-			
+	
 	/////////////////////////////////////////////
-	// Attribute
+	// AttributeType
 	////////////////////////////////////////////
 	
-	@GetMapping("safebusiness/listAttributes")
-	public String listAttributes(Model model) {
+	@GetMapping("safebusiness/listAttributeTypes")
+	public String listAttributeTypes(Model model, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Iterable<ActionAttribute> interator = attributeRepo.findAll();
 		@SuppressWarnings("unchecked")
 		List<ActionAttribute> attributes = interator != null ? IteratorUtils.toList(interator.iterator()) : new ArrayList<>();
@@ -198,37 +200,36 @@ public class MainController {
 		return "listAttributes";
 	}
 	
-	@GetMapping("safebusiness/attribute/{id}")
-	public String createOrViewAttribute(Model model, @PathVariable("id") String id) {
+	@GetMapping("safebusiness/attributeType/{id}")
+	public String createOrViewAttributeType(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
-				ActionAttribute actionAtt = APIUtils.getActionAttributeById(Integer.parseInt(id), attributeRepo.findAll());
-				if (actionAtt != null) {
-					model.addAttribute("attribute", actionAtt);
+				AttributeType type = attTypeRepo.findById(Integer.parseInt(id)).get();
+				if (type != null) {
+					model.addAttribute("attributeType", type);
 					model.addAttribute("inViewMode", true);
-					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
 				} else {
 					model.addAttribute("inViewMode", false);
-					model.addAttribute("attribute", new ActionAttribute());
-					model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+					model.addAttribute("attributeType", new AttributeType());
 				}
 			} catch(NumberFormatException ex) {
 				model.addAttribute("inViewMode", false);
-				model.addAttribute("attribute", new ActionAttribute());
-				model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+				model.addAttribute("attributeType", new AttributeType());
 			}
 			
 		} else {
 			model.addAttribute("inViewMode", false);
-			model.addAttribute("attribute", new ActionAttribute());
-			model.addAttribute("dataTypes", Datatype.getSupportedDatatypes());
+			model.addAttribute("attributeType", new AttributeType());
 		}
 		
-		return "attribute";
+		return "attributeType";
 	}
 	
-	@PostMapping("safebusiness/addAttribute/{string}")
-	public String addAttribute(@Valid ActionAttribute attribute, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+	@PostMapping("safebusiness/addAttributeType/{string}")
+	public String addAttributeType(@Valid ActionAttribute attribute, @PathVariable("string") String action) {
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
@@ -246,8 +247,8 @@ public class MainController {
 	
 	// Another hack around here
 	@GetMapping("safebusiness/addAttribute/viewAttribute/{id}")
-	public String viewAttributeDuplicateHandler(Model model, @PathVariable("id") String id) {
-		return createOrViewAttribute(model, id);
+	public String viewAttributeTypeDuplicateHandler(Model model, @PathVariable("id") String id, HttpSession session) {
+		return createOrViewAttributeType(model, id, session);
 	}
 	
 	/////////////////////////////////////////////
@@ -256,7 +257,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/section/{id}")
 	public String createOrViewSection(Model model, @PathVariable("id") String id, HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		if (id != null) {
@@ -282,12 +283,14 @@ public class MainController {
 			model.addAttribute("inViewMode", false);
 			model.addAttribute("section", new Section());
 		}
-		
 		return "section";
 	}
 	
 	@PostMapping("safebusiness/addSection/{string}")
-	public String addSection(@Valid Section section, @PathVariable("string") String action, HttpServletResponse httpResponse) {
+	public String addSection(@Valid Section section, @PathVariable("string") String action, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		try {
 			// Make updating possible
 			// TODO This has to be done to all domains supporting view modes
@@ -316,7 +319,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/listSections")
 	public String listSections(Model model, HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		Iterable<Section> interator = sectionRepo.findAll();
@@ -327,7 +330,7 @@ public class MainController {
 	}
 		
 	@GetMapping("safebusiness/addSection/viewSection/{id}")
-	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id,HttpSession session) {
+	public String viewSectionDuplicateHandler(Model model, @PathVariable("id") String id, HttpSession session) {
 		return createOrViewSection(model, id, session);
 	}
 	
@@ -337,7 +340,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/listActions")
 	public String listActions(Model model, HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		Iterable<Action> interator = actionRepo.findAll();
@@ -348,7 +351,10 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/action/{id}")
-	public String createOrViewAction(Model model, @PathVariable("id") String id) {
+	public String createOrViewAction(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				Action action = APIUtils.getActionById(Integer.parseInt(id), actionRepo.findAll());
@@ -399,8 +405,8 @@ public class MainController {
 	
 	// Another hack around here
 	@GetMapping("safebusiness/addAction/viewAction/{id}")
-	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id) {		
-		return createOrViewAction(model, id);
+	public String viewActionDuplicateHandler(Model model, @PathVariable("id") String id, HttpSession session) {		
+		return createOrViewAction(model, id, session);
 	}
 	
 	/////////////////////////////////////////////
@@ -409,7 +415,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/listActs")
 	public String listActs(Model model, HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		Iterable<Act> interator = actRepo.findAll();
@@ -420,7 +426,10 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/act/{id}")
-	public String createOrViewAct(Model model, @PathVariable("id") String id) {
+	public String createOrViewAct(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				Act act = APIUtils.getActById(Integer.parseInt(id), actRepo.findAll());
@@ -472,8 +481,8 @@ public class MainController {
 	
 	// Another hack around here
 	@GetMapping("safebusiness/addAct/viewAct/{id}")
-	public String viewActDuplicateHandler(Model model, @PathVariable("id") String id) {		
-		return createOrViewAct(model, id);
+	public String viewActDuplicateHandler(Model model, @PathVariable("id") String id, HttpSession session) {		
+		return createOrViewAct(model, id, session);
 	}
 	
 	////////////////////////////////////
@@ -482,7 +491,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/procedure/{id}")
 	public String createOrViewProcedure(Model model, @PathVariable("id") String id,HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		if (id != null) {
@@ -555,7 +564,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/listProcedures")
 	public String listProcedures(Model model,HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		List<Procedure> procedures = APIUtils.careFullyCastIterableToList(procedureRepo.findAll());
@@ -568,7 +577,10 @@ public class MainController {
 	//////////////////////////////////////////
 	
 	@GetMapping("safebusiness/process/{id}")
-	public String createOrViewProcess(Model model, @PathVariable("id") String id) {
+	public String createOrViewProcess(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		if (id != null) {
 			try {
 				Process process = processRepo.findById(Integer.parseInt(id)).get();
@@ -596,8 +608,8 @@ public class MainController {
 	}
 	
 	@GetMapping("safebusiness/addProcess/viewProcess/{id}")
-	public String createOrViewDuplicateProcessRouteHandler(Model model, @PathVariable("id") String id) {
-		return createOrViewProcess(model, id);
+	public String createOrViewDuplicateProcessRouteHandler(Model model, @PathVariable("id") String id, HttpSession session) {
+		return createOrViewProcess(model, id, session);
 	}
 	
 	@PostMapping("safebusiness/addProcess/{string}")
@@ -642,7 +654,7 @@ public class MainController {
 	
 	@GetMapping("safebusiness/viewAct/{string}")
 	public String viewAct(Model model, @PathVariable("string") String action,HttpSession session) {
-		if(!isAuthenticatedSession(session)) {
+		if (!isAuthenticatedSession(session)) {
 			return "redirect:/safebusiness/login";
 		}
 		try {
@@ -662,7 +674,7 @@ public class MainController {
 		return "viewAct";
 	}
 	
-	//Checks whether current HttpSession is authenticated
+	// Checks whether current HttpSession is authenticated
 	private boolean isAuthenticatedSession(HttpSession session) {
 	      return session.getAttribute("username") != null;
 	}
