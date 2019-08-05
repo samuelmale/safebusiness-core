@@ -7,6 +7,84 @@
 		<!-- Content goes here -->
 		<div id="content-wrapper" class="d-flex flex-column">
 			<div th:insert="fragments/header.html :: header"></div>
+			<div id="content">
+			<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Administration</h1>
+          </div>  
+
+          <div class="row">
+
+            <div class="col-lg-6">
+
+              <!-- Default Card Example -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="m-0 font-weight-bold text-primary">Processes</h6>
+                </div>
+                <div class="card-body">
+                  <ul>
+                  <li><a href="/safebusiness/procedure/new">Create Process</a></li>
+                  <li><a href="/safebusiness/listProcesses">View Processes</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Basic Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Procedures</h6>
+                </div>
+                <div class="card-body">
+                   <ul>
+                  <li><a href="/safebusiness/procedure/new">New Procedure</a></li>
+                  <li><a href="/safebusiness/listProcedures">View Procedures</a></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-lg-6">
+
+              <!-- Basic Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Articles</h6>
+                </div>
+                <div class="card-body">
+                   <ul>
+                  <li><a href="/safebusiness/article/new">New Article</a></li>
+                  <li><a href="/safebusiness/listArticles">View Articles</a></li>
+                  </ul>
+                </div>
+              </div>
+
+             <!-- Basic Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Attribute Types</h6>
+                </div>
+                <div class="card-body">
+                   <ul>
+                  <li><a href="">New Attribute Type</a></li>
+                  <li><a href="">View Sections</a></li>
+                  </ul>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+          
+
+        </div>
+        <!-- /.container-fluid -->
+			</div>
 		</div>
 	</div>
 	<!-- Footer -->
