@@ -1,0 +1,22 @@
+<div th:fragment="attribute" class="form-row">
+	<div th:switch="${attribute.dataTypeString}">
+		<div th:case="'java.lang.String'">
+			<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+			<input th:id="'attribute-' + ${iStat.index}" type="text" th:value="${attribute.text}" placeholder="Value" class="form-control" />
+			
+		</div>
+		<div th:case="'java.lang.Integer'">
+			<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+			<input th:id="'attribute-' + ${iStat.index}" type="number" th:value="${attribute.valueInt}" placeholder="Value" class="form-control" />
+		</div>
+		<div th:case="'java.util.File'">
+			<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+			<input th:id="'attribute-' + ${iStat.index}" type="file" th:value="${attribute.value}" class="form-control" />
+		</div>
+		<div th:case="'java.util.Date'">
+			<label for="value">Provide <span th:utext="${attribute.name}"></span></label>
+			<input th:id="'attribute-' + ${iStat.index}" type="date" th:value="${attribute.valueDate}" placeholder="Value" class="form-control" />
+		</div>
+		<br/>
+	</div>
+</div>

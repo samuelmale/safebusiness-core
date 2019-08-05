@@ -1,0 +1,70 @@
+<head>
+	<title>New Document</title>
+</head>
+<body id="page-top">
+
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4><span th:utext="${document.name}"></span></h4>
+					<div>	
+						<form action="#" th:action="@{/safebusiness/addDocument}" th:object="${document}" method="post" id="sb-new-document">
+							<!-- Show Acts -->
+							<div th:if="${#lists.isEmpty(acts)}">
+								No Available Acts
+							</div>
+							<div id="" th:unless="${#lists.isEmpty(acts)}">
+								<ul class="list-group">
+								  <li class="list-group-item" th:each="act : ${acts}">
+								  	<div th:insert="fragments/viewAct.html :: viewAct"></div>
+								  </li>
+								</ul>
+					
+							</div>
+							<!-- End Acts -->
+							<hr>
+							<!-- Show Instructions -->
+							
+							<!-- End Instructions -->
+							<div th:if="${#lists.isEmpty(attributes)}">
+								No Available attributes
+							</div>
+							<div id="" th:unless="${#lists.isEmpty(attributes)}">
+								<ul class="list-group">
+								  <li class="list-group-item" th:each="attribute, iStat : ${attributes}">
+								  	<div th:insert="fragments/attribute.html :: attribute"></div>
+								  </li>
+								</ul>
+					
+							</div>
+							
+							</div>
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+					
+							</div>
+						</form>
+						
+					</div>
+				</div>
+				<div th:insert="fragments/footer.html :: footer"></div>
+			</div>
+			
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-document').submit();
+		});
+	</script>
+</body>

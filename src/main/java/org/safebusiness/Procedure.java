@@ -21,7 +21,7 @@ public class Procedure {
 	@GeneratedValue
 	@Column(name="procedure_id")
 	private Integer id;
-	@OneToMany(mappedBy="procedure")
+	@OneToMany(mappedBy="procedure", fetch=FetchType.EAGER)
     private List<Act> acts;
 	@OneToOne(mappedBy="procedure")
 	private Action action;

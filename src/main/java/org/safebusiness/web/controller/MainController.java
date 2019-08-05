@@ -12,6 +12,8 @@ import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.AttributeType;
+import org.safebusiness.Document;
+import org.safebusiness.Document.ProcedureTemplate;
 import org.safebusiness.Procedure;
 import org.safebusiness.Process;
 import org.safebusiness.Section;
@@ -674,6 +676,41 @@ public class MainController {
 			// TODO
 		}
 		return "viewAct";
+	}
+	
+	//////////////////////////////////////
+	// Document
+	/////////////////////////////////////
+	
+	@GetMapping("safebusiness/newDocument")
+	public String createDocument(Model model) {
+		Document document = new Document();
+		model.addAttribute("document", document);
+		model.addAttribute("processes", (List<Process>)APIUtils.careFullyCastIterableToList(processRepo.findAll()));
+		return "newDocument";
+	}
+	
+	// for playing around with documents
+	// TODO : Should be removed 
+	private Document doc;
+	
+	@PostMapping("safebusiness/addDocument")
+	public String addDocument(Model model, @Valid Document document) {
+		document.setupTemplates(processRepo.findByName(document.getProcessName()));
+		// Cache it somewhere for now
+		doc = document;
+		return "redirect:/safebusiness/viewDocument";
+	}
+	
+	@GetMapping("safebusiness/viewDocument")
+	public String viewDocument(Model model) {
+		List<ProcedureTemplate> templates = doc.getTemplates();
+		
+		model.addAttribute("document", doc);
+		List<Act> acts = templates.get(0).getActs();
+		model.addAttribute("acts", acts);
+		model.addAttribute("attributes", doc.getTemplates().get(0).getAttributes());
+		return "document";
 	}
 	
 	// Checks whether current HttpSession is authenticated
