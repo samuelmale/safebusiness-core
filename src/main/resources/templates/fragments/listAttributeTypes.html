@@ -1,0 +1,16 @@
+<div th:fragment="listAttributeTypes">
+	<div id="" class="container">
+		<div th:if="${#lists.isEmpty(attributeTypes)}">
+			No Available attribute types
+		</div>
+		<div id="" th:unless="${#lists.isEmpty(attributeTypes)}">
+			<ul class="list-group">
+			  <li class="list-group-item" th:each="att : ${attributeTypes}">
+			  	<a th:href="@{/safebusiness/attributeType/{action}(action=${att.id})}"><span th:utext="${att.name}"></span></a>
+			  </li>
+			</ul>
+
+		</div>
+
+	</div>
+</div>

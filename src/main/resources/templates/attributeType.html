@@ -9,7 +9,7 @@
 			<div id="content">
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
-					<h4 th:if="${inViewMode} == true"><span th:utext="${attribute.name}"></span></h4>
+					<h4 th:if="${inViewMode} == true"><span th:utext="${attributeType.name}"></span></h4>
 					<h4 th:unless="${inViewMode} == true">New Attribute Type</h4>
 					<div>	
 						<form action="#" th:action="@{/safebusiness/addAttributeType/{string}(string=${attributeType.stringId} == null ? 'new' : ${attributeType.stringId})}" th:object="${attributeType}" method="post" id="sb-new-attribute">

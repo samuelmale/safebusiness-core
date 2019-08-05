@@ -13,11 +13,13 @@ import org.safebusiness.Action;
 import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.Attribute;
+import org.safebusiness.AttributeType;
 import org.safebusiness.Procedure;
 import org.safebusiness.User;
 import org.safebusiness.api.repo.ActRepository;
 import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ArticleRepository;
+import org.safebusiness.api.repo.AttributeTypeRepository;
 import org.safebusiness.api.repo.ProcedureRepository;
 import org.safebusiness.api.repo.SectionRepository;
 import org.safebusiness.web.controller.MainController;
@@ -132,18 +134,18 @@ public class APIUtils {
 		return null;
 	}
 	
-	public static List<ActionAttribute> parseAttributeString(String val, ActionAttributeRepository attributeRepo) {
-		List<ActionAttribute> ret = new ArrayList<>();
+	public static List<AttributeType> parseAttributeTypeString(String val, AttributeTypeRepository attributeTypeRepo) {
+		List<AttributeType> ret = new ArrayList<>();
 		// Return ASAP
 		if (StringUtils.isBlank(val)) {
 			return ret;
 		}
 		for(String name : parseCommaDelimitedStringToStringList(val)) {
-			ActionAttribute att = attributeRepo.findByName(name);
+			AttributeType att = attributeTypeRepo.findByName(name);
 			if (att != null) {
 				ret.add(att);
 			} else {
-				log.warn("Couldn't find Attribute with name :", name);
+				log.warn("Couldn't find AttributeType with name :", name);
 			}
 		}
 

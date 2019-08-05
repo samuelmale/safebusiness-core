@@ -1,11 +1,14 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -37,6 +40,10 @@ public class AttributeType {
 	private String stringId;
 	@OneToMany(mappedBy="attributeType")
 	private List<ActionAttribute> attributes;
+	
+	@ManyToOne
+    @JoinColumn(name="action_id", nullable=true)
+	private Action action;
 	
 	public Integer getId() {
 		if (id != null) {
@@ -86,6 +93,25 @@ public class AttributeType {
 	public void setStringId(String stringId) {
 		this.stringId = stringId;
 	}
-	
+
+	public List<ActionAttribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<ActionAttribute> attributes) {
+		if (this.attributes == null) {
+			this.attributes = new ArrayList<>();
+		}
+		
+		this.attributes.addAll(attributes);
+	}
+
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
 	
 }
