@@ -11,8 +11,7 @@
 				<div class="container-fluid">
 					<h4 th:if="${inViewMode} == true"><span th:utext="${attribute.name}"></span></h4>
 					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
-					<div>
-						
+					<div>	
 						<form action="#" th:action="@{/safebusiness/addAttribute/{string}(string=${attribute.stringId} == null ? 'new' : ${attribute.stringId})}" th:object="${attribute}" method="post" id="sb-new-attribute">
 							<div class="form-row">
 								<div class="form-group col-sm-6">
@@ -75,6 +74,4 @@
 			$('#sb-new-attribute').submit();
 		});
 	</script>
-	
-	
 </body>

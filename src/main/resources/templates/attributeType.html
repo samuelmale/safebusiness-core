@@ -1,0 +1,53 @@
+<body class id="page-top">
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<!-- Content goes here -->
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4 th:if="${inViewMode} == true"><span th:utext="${attribute.name}"></span></h4>
+					<h4 th:unless="${inViewMode} == true">New Attribute Type</h4>
+					<div>	
+						<form action="#" th:action="@{/safebusiness/addAttributeType/{string}(string=${attributeType.stringId} == null ? 'new' : ${attributeType.stringId})}" th:object="${attributeType}" method="post" id="sb-new-attribute">
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="name">Name:</label>
+									<input id="name" type="text" th:field="*{name}" placeholder="Name" class="form-control" />
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="article-value">Data type:</label>
+									<select th:field="*{dataTypeString}" class="form-control">
+									<option th:each="type : ${attributeType.dataTypes}" th:value="${type}" th:text="${type}" ></option>
+									</select>
+								</div>
+							</div>
+						
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+					
+							</div>
+						</form>
+						
+					</div>
+				</div>
+			</div>
+			<!-- Footer -->
+			<div th:insert="fragments/footer.html :: footer"></div>
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-attribute').submit();
+		});
+	</script>
+</body>
