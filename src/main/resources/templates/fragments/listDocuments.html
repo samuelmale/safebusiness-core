@@ -1,0 +1,15 @@
+<div th:fragment="listDocuments">
+<div id="" class="container">
+			<div th:if="${#lists.isEmpty(documents)}">
+				<span>No Available Documents</span>
+			</div>
+			<div id="" th:unless="${#lists.isEmpty(documents)}">
+				<ul class="list-group">
+				  <li class="list-group-item" th:each="document : ${documents}">
+				  	<a th:href="@{/safebusiness/viewDocument/{action}(action=${document.id})}"><span th:utext="${document.name}"></span></a>
+				  </li>
+				</ul>
+				
+			</div>
+		</div>
+</div>

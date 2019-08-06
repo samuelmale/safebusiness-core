@@ -287,16 +287,16 @@ public class APIUtils {
 		}
 		for (int i = 0; i <= attributeBatchSize; i++) {
 			String attributeWidgetName = "attribute-" + i;
-			String attributeNameInDOM = "attributeName-" + i;
-			String attName = data.getFirst(attributeNameInDOM);
+			String attributeIdInDOM = "attributeId-" + i;
+			String id = data.getFirst(attributeIdInDOM);
 			// check if a value was provided
 			String value = data.getFirst(attributeWidgetName);
 			if (StringUtils.isBlank(value)) {
 				// Just go to next
 				continue;
 			}
-			if (attName != null) {
-				ActionAttribute attribute = attributeRepo.findByName(attName);
+			if (id != null) {
+				ActionAttribute attribute = attributeRepo.findById(Integer.parseInt(id)).get();
 				if (attribute != null) {
 					switch (attribute.getDataTypeString()) {
 						case Datatype.TEXT :

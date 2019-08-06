@@ -17,15 +17,16 @@
 						<form action="#" th:action="@{/safebusiness/updateDocument}" th:object="${document}" method="post" id="sb-new-document">
 							<input type="hidden" name="documentId" th:value="${document.id}">
 							<input type="hidden" name="process-name" th:value="${document.processName}">
+							<input type="hidden" name="attributeBatchSize" th:value="${attributeBatchSize}">
 							
 							<div class="form-row">
 								<div class="form-group col-sm-6">
 									<label for="firstName">First Name:</label>
-									<input id="firstName" type="text" th:field="*{clientFirstName}" placeholder="Client's first name" class="form-control" />
+									<input id="firstName" name="firstName" type="text" th:value="${document.clientFirstName}" placeholder="Client's first name" class="form-control" />
 								</div>
 								<div class="form-group col-sm-6">
 									<label for="lastName">Last Name:</label>
-									<input id="lastName" type="text" th:field="*{clientLastName}" placeholder="Client's last name" class="form-control" />
+									<input id="lastName" name="lastName" type="text" th:value="${document.clientLastName}" placeholder="Client's last name" class="form-control" />
 								</div>
 							</div>
 							
