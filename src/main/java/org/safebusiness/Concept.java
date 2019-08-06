@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +65,10 @@ public class Concept {
 	}
 
 	public void setAnswers(List<Concept> answers) {
-		this.answers = answers;
+		if(this.answers == null) {
+			this.answers = new ArrayList<>();
+		}
+		this.answers.addAll(answers);
 	}
 
 	public ConceptType getType() {

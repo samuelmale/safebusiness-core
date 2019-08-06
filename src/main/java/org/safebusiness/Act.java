@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -38,7 +39,10 @@ public class Act {
 	}
 
 	public void setSections(List<Section> sections) {
-		this.sections = sections;
+		if(this.sections == null) {
+			this.sections = new ArrayList<>();
+		}
+		this.sections.addAll(sections);
 	}
 
 	public Integer getId() {

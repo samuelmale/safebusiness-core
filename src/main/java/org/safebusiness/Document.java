@@ -89,7 +89,10 @@ public class Document {
 	}
 
 	public void setTemplates(List<ProcedureTemplate> templates) {
-		this.templates = templates;
+		if(this.templates == null) {
+			this.templates = new ArrayList<>();
+		}
+		this.templates.addAll(templates);
 	}
 
 	public String getClientFirstName() {

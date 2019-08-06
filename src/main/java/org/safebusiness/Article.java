@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -64,7 +65,10 @@ public class Article {
 	}
 	
 	public void setChildArticles(List<Article> childArticles) {
-		this.childArticles = childArticles;
+		if(this.childArticles == null) {
+			this.childArticles = new ArrayList<>();
+		}
+		this.childArticles.addAll(childArticles);
 	}
 
 	public Article getParent() {
