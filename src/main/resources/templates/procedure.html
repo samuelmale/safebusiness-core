@@ -45,7 +45,7 @@
 							<br>
 							<div class="form-row">
 								<div>
-								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-cancel" type="button" class="btn btn-danger">Cancel</button>
 								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
 								</div>
 				
@@ -63,6 +63,9 @@
 	<script type="text/javascript">
 		$('#sb-submit').click( function() {
 			$('#sb-new-procedure').submit();
+		});
+		$('#sb-cancel').click(function(){
+			window.location.href='/safebusiness/index';
 		});
 	</script>
 	
