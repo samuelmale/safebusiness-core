@@ -1,9 +1,9 @@
 package org.safebusiness;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -120,6 +120,8 @@ public class Document {
 		}
 		for (Procedure procedure : procedures) {
 			ProcedureTemplate template = new ProcedureTemplate();
+			template.setInstructions(procedure.getAction().getInstructionString());
+			template = templateRepo.save(template);
 			List<Act> acts = procedure.getActs();
 			if (acts != null) {
 				template.setActs(acts);
@@ -127,15 +129,15 @@ public class Document {
 			if (procedure.getAction() == null) {
 				throw new IllegalArgumentException("Can't use Procedure with undefined Action");
 			}
-			template.setInstructions(procedure.getAction().getInstructionString());
-			// First save the template
-			templateRepo.save(template);
+			
 			List<AttributeType> types = procedure.getAction().getAttributeTypes();
 			if (types != null) {
 				for (AttributeType type : types) {
 					ActionAttribute attribute = new ActionAttribute();
 					attribute.setName(type.getName());
 					attribute.setDataTypeString(type.getDataTypeString());
+					attribute.setProcedureTemplate(template);
+					attribute = attRepo.save(attribute);
 					template.getAttributes().add(attribute);
 				}
 			}
@@ -144,9 +146,15 @@ public class Document {
 
 	}
 	
-	public void populateMetadata() {
+	public void updateActRefsInDoc() {
+		int index = 0;
+		List<Procedure> procedures = process.getProcedures();
+		// Remove duplicates if any
+		templates = new ArrayList<>(new HashSet<>(templates));
 		for (ProcedureTemplate template : templates) {
-			//template.
+			Procedure procedure = procedures.get(index);
+			template.setActs(procedure.getActs());
+			index++;
 		}
 	}
 	

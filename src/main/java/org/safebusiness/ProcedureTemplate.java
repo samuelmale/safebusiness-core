@@ -18,6 +18,7 @@ public class ProcedureTemplate {
 	
 	@GeneratedValue
 	@Id
+	@Column
 	private Integer id;
 	@Transient
 	private List<Act> acts;

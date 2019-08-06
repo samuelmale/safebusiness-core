@@ -1,9 +1,11 @@
 package org.safebusiness.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.safebusiness.Act;
 import org.safebusiness.Action;
+import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.AttributeType;
 import org.safebusiness.Document;
@@ -29,6 +32,7 @@ import org.safebusiness.api.repo.ArticleRepository;
 import org.safebusiness.api.repo.AttributeTypeRepository;
 import org.safebusiness.api.repo.DocumentRepository;
 import org.safebusiness.api.repo.ProcedureRepository;
+import org.safebusiness.api.repo.ProcedureTemplateRepository;
 import org.safebusiness.api.repo.ProcessRepository;
 import org.safebusiness.api.repo.SectionRepository;
 import org.slf4j.Logger;
@@ -69,6 +73,8 @@ public class MainController {
 	AttributeTypeRepository attTypeRepo;
 	@Autowired
 	DocumentRepository documentRepo;
+	@Autowired
+	ProcedureTemplateRepository templateRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index(HttpSession session) {
@@ -660,38 +666,15 @@ public class MainController {
 		return "listProcesses";
 	}
 	
-	///////////////////////////////////////
-	// Evaluate view modes
-	///////////////////////////////////////
-	
-	@GetMapping("safebusiness/viewAct/{string}")
-	public String viewAct(Model model, @PathVariable("string") String action,HttpSession session) {
-		if (!isAuthenticatedSession(session)) {
-			return "redirect:/safebusiness/login";
-		}
-		try {
-			if (actRepo.findById(Integer.parseInt(action)).isPresent()) {
-				Act act = actRepo.findById(Integer.parseInt(action)).get();
-				// Hack around to have `stringId` initialized
-				// Tired of writing dirty code :-(
-				act.getId();
-				// children
-				model.addAttribute("act", act);
-			} else {
-				// TODO
-			}
-		} catch(NumberFormatException ex) {
-			// TODO
-		}
-		return "viewAct";
-	}
-	
 	//////////////////////////////////////
 	// Document
 	/////////////////////////////////////
 	
 	@GetMapping("safebusiness/newDocument")
-	public String createDocument(Model model) {
+	public String createDocument(Model model, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		Document document = new Document();
 		model.addAttribute("document", document);
 		model.addAttribute("processes", (List<Process>)APIUtils.careFullyCastIterableToList(processRepo.findAll()));
@@ -702,7 +685,7 @@ public class MainController {
 	public String addDocument(Model model, @Valid Document document) {
 		Process process = processRepo.findByName(document.getProcessName());
 		process.getDocuments().add(document);
-		//document.setupTemplates(process);
+		document.setupTemplates(process, attributeRepo, templateRepo);
 		for (ProcedureTemplate template : document.getTemplates()) {
 			template.setDocument(document);
 		}
@@ -711,27 +694,47 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/updateDocument")
-	public String updateDocument(Model model, @Valid Document document, @RequestBody MultiValueMap<String, String> formData, @RequestParam("documentId") String docId, @RequestParam("process-name") String processName) {
-		Integer id = null;
-		Process process = document.getProcessName() != null ? processRepo.findByName(document.getProcessName()) : processRepo.findByName(processName);
+	public String updateDocument(Model model, @Valid Document document, @RequestBody MultiValueMap<String, String> formData, 
+			@RequestParam("documentId") String docId, @RequestParam("attributeBatchSize") String attributeBatchSize) {
 		try {
-			id = Integer.parseInt(docId);
-			document.setId(id);
-			
+			document = documentRepo.findById(Integer.parseInt(docId)).get();
+			String firstName = formData.getFirst("firstName");
+			String lastName = formData.getFirst("lastName");
+			if (StringUtils.isNotBlank(firstName)) {
+				document.setClientFirstName(firstName);
+			}
+			if (StringUtils.isNotBlank(lastName)) {
+				document.setClientLastName(lastName);;
+			}
+			// Save Attributes
+			APIUtils.saveAttributesFromDocument(formData, Integer.parseInt(attributeBatchSize), attributeRepo);
+			documentRepo.save(document);
 		} catch(NumberFormatException ex) {
-			
+			throw new IllegalArgumentException("Invalid Document ID :" + docId);
 		}
-		return "redirect:/safebusiness/viewDocument";
+		return "redirect:/safebusiness/viewDocument/" + document.getId();
 	}
 	
 	@GetMapping("safebusiness/viewDocument/{id}")
-	public String viewDocument(Model model, @PathVariable("id") String id) {
+	public String viewDocument(Model model, @PathVariable("id") String id, HttpSession session) {
+		if (!isAuthenticatedSession(session)) {
+			return "redirect:/safebusiness/login";
+		}
 		try {
 			Integer docId = Integer.parseInt(id);
 			Document doc = documentRepo.findById(docId).get();
-			List<ProcedureTemplate> templates = doc.getTemplates();
+	        Set<ProcedureTemplate> templatesWithoutDuplicates = new HashSet<ProcedureTemplate>(doc.getTemplates());
+	        int attributeBatchSize = 0;
+	        for (ProcedureTemplate template : templatesWithoutDuplicates) {
+	        	List<ActionAttribute> atts = template.getAttributes();
+	        	if (atts != null) {
+	        		attributeBatchSize = attributeBatchSize + atts.size();
+	        	}
+	        }
+	        doc.updateActRefsInDoc();
 			model.addAttribute("document", doc);
-			model.addAttribute("templates", templates);
+			model.addAttribute("templates", templatesWithoutDuplicates);
+			model.addAttribute("attributeBatchSize", attributeBatchSize);
 			
 		} catch(NumberFormatException ex) {
 		}
@@ -740,17 +743,16 @@ public class MainController {
 		return "document";
 	}
 	
+	@GetMapping("safebusiness/listDocuments")
+	public String listDocuments(Model model) {
+		List<Document> docs = APIUtils.careFullyCastIterableToList(documentRepo.findAll());
+		model.addAttribute("documents", docs);
+		return "listDocuments";
+	}
+	
 	// Checks whether current HttpSession is authenticated
 	private boolean isAuthenticatedSession(HttpSession session) {
 	      return session.getAttribute("username") != null;
 	}
 
-	public static void printMap(Map<String, String[]> mp) {
-	    Iterator it = mp.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry)it.next();
-	        System.out.println(pair.getKey() + " = " + pair.getValue());
-	        //it.remove(); // avoids a ConcurrentModificationException
-	    }
-	}
 }
