@@ -74,7 +74,11 @@ public class Process {
 		}
 		return documents;
 	}
+	//kin
 	public void setDocuments(List<Document> documents) {
+		if(this.documents == null) {
+			this.documents = new ArrayList<>();
+		}
 		this.documents = documents;
 	}
 	
