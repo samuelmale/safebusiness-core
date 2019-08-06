@@ -1,5 +1,8 @@
 package org.safebusiness;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Contains utility methods required for Test cases
  * 
@@ -23,4 +26,12 @@ public abstract class RegressionTestHelper {
 		return attribute;
 	}
 	
+	public ProcedureTemplate createProcedureTemplate() {
+		ProcedureTemplate template = new ProcedureTemplate();
+		ActionAttribute age = createActionAttribute(Datatype.INTEGER, "Age", 17);
+		ActionAttribute height = createActionAttribute(Datatype.INTEGER, "Heigt", 17);
+		List<ActionAttribute> atts = Arrays.asList(age, height);
+		template.setAttributes(atts);
+		return template;
+	}
 }

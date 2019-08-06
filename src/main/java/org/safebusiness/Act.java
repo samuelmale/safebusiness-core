@@ -19,12 +19,12 @@ public class Act {
 	@GeneratedValue
 	@Column(name="act_id")
 	private Integer id;
-	@OneToMany(mappedBy="act")
+	@OneToMany(mappedBy="act", fetch=FetchType.EAGER)
 	private List<Section> sections;
 	@Column
 	private String name;
 	// Procedure owning this Act
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="procedure_id_pk", nullable=true)
 	private Procedure procedure;
 	@Column

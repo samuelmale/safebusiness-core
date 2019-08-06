@@ -47,7 +47,7 @@ public abstract class Attribute {
 	@Column
 	private String text;
 	@Column
-	private String valueInt;
+	private Integer valueInt;
 	@Column
 	private Date valueDate;
 	
@@ -165,11 +165,11 @@ public abstract class Attribute {
 		this.text = text;
 	}
 
-	public String getValueInt() {
+	public Integer getValueInt() {
 		return valueInt;
 	}
 
-	public void setValueInt(String valueInt) {
+	public void setValueInt(Integer valueInt) {
 		this.valueInt = valueInt;
 	}
 

@@ -8,10 +8,12 @@ import javax.persistence.Transient;
 @Entity
 public class ActionAttribute extends Attribute {
 	
-//	@ManyToOne
-//    @JoinColumn(name="action_id", nullable=true)
 	@Transient
 	private Action action;
+	
+	@ManyToOne
+	@JoinColumn(name="procedure_template_id", nullable=true)
+	private ProcedureTemplate procedureTemplate;
 	
 	public Action getAction() {
 		return (Action) this.getOwner();
@@ -24,6 +26,14 @@ public class ActionAttribute extends Attribute {
 
 	public void setAction(Action action) {
 		this.action = action;
+	}
+
+	public ProcedureTemplate getProcedureTemplate() {
+		return procedureTemplate;
+	}
+
+	public void setProcedureTemplate(ProcedureTemplate procedureTemplate) {
+		this.procedureTemplate = procedureTemplate;
 	}
 	
 }

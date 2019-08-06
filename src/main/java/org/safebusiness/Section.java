@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -26,9 +27,9 @@ public class Section {
 	/**
 	 * Captures the {@code content}
 	 */
-	@OneToMany(mappedBy="section")
+	@OneToMany(mappedBy="section", fetch=FetchType.EAGER)
 	private List<Article> articles;
-	@OneToMany(mappedBy="parent")
+	@OneToMany(mappedBy="parent", fetch=FetchType.EAGER)
 	private List<Section> subSections;
 	// If this is a sub section, this is the Parent reference to the super section
 	@ManyToOne
@@ -36,7 +37,7 @@ public class Section {
 	private Section parent;
 	// The Act owning this section
 	@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="act_id_fk_silly", nullable=true)
+    @JoinColumn(name="act_id_fk", nullable=true)
 	private Act act;
 	
 	//This a hack around having this @id in String format
@@ -63,13 +64,20 @@ public class Section {
 		return articles;
 	}
 	public void setArticles(List<Article> articles) {
-		this.articles = articles;
+		if (this.articles == null) {
+			this.articles = new ArrayList<>();
+		}
+		this.articles.addAll(articles);
 	}
 	public List<Section> getSubSections() {
+		
 		return subSections;
 	}
 	public void setSubSections(List<Section> subSections) {
-		this.subSections = subSections;
+		if (this.subSections == null) {
+			this.subSections = new ArrayList<>();
+		}
+		this.subSections.addAll(subSections);
 	}
 	public Section getParent() {
 		return parent;

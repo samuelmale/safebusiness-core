@@ -1,5 +1,6 @@
 package org.safebusiness.api.repo;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.safebusiness.Process;
 
@@ -16,4 +17,8 @@ import org.safebusiness.Process;
 
 public interface ProcessRepository extends CrudRepository<Process, Integer> {
 
+	@Query(
+			value = "SELECT * FROM process p WHERE p.process_name = ?1", 
+			nativeQuery = true)
+	public Process findByName(String name);
 }

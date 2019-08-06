@@ -1,0 +1,62 @@
+<head>
+	<title>New Document</title>
+</head>
+<body id="page-top">
+
+	<div id="wrapper">
+	
+		<!-- Sidebar -->
+		<div th:insert="fragments/sidebar.html :: sidebar"></div>
+		
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:insert="fragments/header.html :: header"></div>
+				<div class="container-fluid">
+					<h4><span th:utext="${document.name}"></span></h4>
+					<div>	
+						<form action="#" th:action="@{/safebusiness/updateDocument}" th:object="${document}" method="post" id="sb-new-document">
+							<input type="hidden" name="documentId" th:value="${document.id}">
+							<input type="hidden" name="process-name" th:value="${document.processName}">
+							
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="firstName">First Name:</label>
+									<input id="firstName" type="text" th:field="*{clientFirstName}" placeholder="Client's first name" class="form-control" />
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="lastName">Last Name:</label>
+									<input id="lastName" type="text" th:field="*{clientLastName}" placeholder="Client's last name" class="form-control" />
+								</div>
+							</div>
+							
+							<div>
+								<ul class="list-group">
+							  		<li class="list-group-item" th:each="template : ${templates}">
+							  			<div th:insert="fragments/procedureTemplate.html :: procedureTemplate(acts=${template.acts}, attributes=${template.attributes}, instructionString=${template.instructions})"></div>
+							    	</li>
+								</ul>
+							</div>
+							<br>
+							<div class="form-row">
+								<div>
+								  <button type="button" class="btn btn-danger">Cancel</button>
+								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								</div>
+					
+							</div>
+						</form>
+						
+					</div>
+				</div>
+				<div th:insert="fragments/footer.html :: footer"></div>
+			</div>
+			
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		$('#sb-submit').click( function() {
+			$('#sb-new-document').submit();
+		});
+	</script>
+</body>

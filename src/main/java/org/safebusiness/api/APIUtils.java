@@ -14,6 +14,7 @@ import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.Attribute;
 import org.safebusiness.AttributeType;
+import org.safebusiness.Datatype;
 import org.safebusiness.Procedure;
 import org.safebusiness.User;
 import org.safebusiness.api.repo.ActRepository;
@@ -25,6 +26,7 @@ import org.safebusiness.api.repo.SectionRepository;
 import org.safebusiness.web.controller.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Defines API Utility methods
@@ -278,5 +280,45 @@ public class APIUtils {
 		return iterator != null ? IteratorUtils.toList(iterator) : new ArrayList<>();
 		
 	}
+	
+	public static void saveAttributesFromDocument(MultiValueMap<String, String> data, Integer attributeBatchSize, ActionAttributeRepository attributeRepo) {
+		if (attributeBatchSize < 1) {
+			return;
+		}
+		for (int i = 0; i <= attributeBatchSize; i++) {
+			String attributeWidgetName = "attribute-" + i;
+			String attributeNameInDOM = "attributeName-" + i;
+			String attName = data.getFirst(attributeNameInDOM);
+			// check if a value was provided
+			String value = data.getFirst(attributeWidgetName);
+			if (StringUtils.isBlank(value)) {
+				// Just go to next
+				continue;
+			}
+			if (attName != null) {
+				ActionAttribute attribute = attributeRepo.findByName(attName);
+				if (attribute != null) {
+					switch (attribute.getDataTypeString()) {
+						case Datatype.TEXT :
+							attribute.setText(value);
+							break;
+						case Datatype.INTEGER :
+							attribute.setValueInt(Integer.parseInt(value));
+							break;
+						case Datatype.DATE :
+							// TODO
+							break;
+						case Datatype.FILE :
+							// TODO
+							break;
+					}
+					attributeRepo.save(attribute);
+				}
+			}
+		}
+		
+	}
+	
+	
 	
 }
