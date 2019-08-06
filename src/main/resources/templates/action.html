@@ -10,7 +10,7 @@
 				<div th:insert="fragments/header.html :: header"></div>
 				<div class="container-fluid">
 					<h4 th:if="${inViewMode} == true"><span th:utext="${action.name}"></span></h4>
-					<h4 th:unless="${inViewMode} == true">New Attribute</h4>
+					<h4 th:unless="${inViewMode} == true">New Action</h4>
 					<div>
 						
 						<form action="#" th:action="@{/safebusiness/addAction/{string}(string=${action.stringId} == null ? 'new' : ${action.stringId})}" th:object="${action}" method="post" id="sb-new-action">
