@@ -173,7 +173,6 @@ public class MainController {
 		for (Article child : children) {
 			child.setParent(article);
 		}
-		// TODO : https://trello.com/c/V3htZorj/16-in-controller-just-append-an-item-to-the-list-instead-of-just-calling-setlistname
 		article.setChildArticles(children);
 		Article savedArticle = articleRepo.save(article);
 		if (savedArticle != null) {
@@ -316,7 +315,6 @@ public class MainController {
 		for (Article article : articles) {
 			article.setSection(section);
 		}
-		// TODO : https://trello.com/c/V3htZorj/16-in-controller-just-append-an-item-to-the-list-instead-of-just-calling-setlistname
 		section.setArticles(articles);
 		List<Section> subSecs = APIUtils.parseSectionString(section.getChildrenCommaSeparatedList(), sectionRepo);
 		for (Section sec : subSecs) {
@@ -482,7 +480,6 @@ public class MainController {
 		for (Section sec : sections) {
 			sec.setAct(act);
 		}
-		// TODO : https://trello.com/c/V3htZorj/16-in-controller-just-append-an-item-to-the-list-instead-of-just-calling-setlistname
 		act.setSections(sections);
 		Act savedAct = actRepo.save(act);
 		if (savedAct != null) {
@@ -640,7 +637,6 @@ public class MainController {
 			proc.setProcess(process);
 		}
 		if (!procedures.isEmpty()) {
-			// TODO : https://trello.com/c/V3htZorj/16-in-controller-just-append-an-item-to-the-list-instead-of-just-calling-setlistname
 			process.setProcedures(procedures);
 		} else {
 			log.warn("Found no Procedures for Process:" + process.getProcessName());
