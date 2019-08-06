@@ -3,6 +3,19 @@ package org.safebusiness;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.safebusiness.api.repo.ActionAttributeRepository;
+import org.safebusiness.api.repo.ProcedureTemplateRepository;
+
 /**
  * This a dynamically generated <code>Law</code> document whose
  * structure is determined by the associated {@link Process}
@@ -10,20 +23,33 @@ import java.util.List;
  * @author samuel
  *
  */
+@Entity
 public class Document {
 
+	@Id
+	@GeneratedValue
+	@Column
 	private Integer id;
+	@Column
 	private String name;
+	@ManyToOne
+	@JoinColumn(name="process_id")
 	private Process process;
+	@OneToMany(mappedBy="document", fetch=FetchType.EAGER)
 	private List<ProcedureTemplate> templates;
+	@Column
 	private String processName;
+	@Column
+	private String clientFirstName;
+	@Column
+	private String clientLastName;
 	
 	public Document() {
 		
 	}
 	
 	public Document(Process process) {
-		setupTemplates(process);
+		//setupTemplates(process);
 	}
 	
 	public String getProcessName() {
@@ -66,7 +92,23 @@ public class Document {
 		this.templates = templates;
 	}
 
-	public void setupTemplates(Process process) {
+	public String getClientFirstName() {
+		return clientFirstName;
+	}
+
+	public void setClientFirstName(String clientFirstName) {
+		this.clientFirstName = clientFirstName;
+	}
+
+	public String getClientLastName() {
+		return clientLastName;
+	}
+
+	public void setClientLastName(String clientLastName) {
+		this.clientLastName = clientLastName;
+	}
+
+	public void setupTemplates(Process process, ActionAttributeRepository attRepo, ProcedureTemplateRepository templateRepo) {
 		this.process = process;
 		if (templates == null) {
 			templates = new ArrayList<>();
@@ -76,7 +118,6 @@ public class Document {
 			throw new IllegalArgumentException("Can't create Document from an Empty Process."
 					+ " No Procedures found!");
 		}
-		System.out.println("Process procedures: " + procedures);
 		for (Procedure procedure : procedures) {
 			ProcedureTemplate template = new ProcedureTemplate();
 			List<Act> acts = procedure.getActs();
@@ -86,6 +127,9 @@ public class Document {
 			if (procedure.getAction() == null) {
 				throw new IllegalArgumentException("Can't use Procedure with undefined Action");
 			}
+			template.setInstructions(procedure.getAction().getInstructionString());
+			// First save the template
+			templateRepo.save(template);
 			List<AttributeType> types = procedure.getAction().getAttributeTypes();
 			if (types != null) {
 				for (AttributeType type : types) {
@@ -95,47 +139,15 @@ public class Document {
 					template.getAttributes().add(attribute);
 				}
 			}
-			template.setInstructions(procedure.getAction().getInstructionString());
 			templates.add(template);
 		}
 
 	}
 	
-	public class ProcedureTemplate {
-		
-		// Informative
-		private List<Act> acts;
-		private String instructions;
-		
-		// Requires input
-		private List<ActionAttribute> attributes;
-
-		public List<Act> getActs() {
-			return acts;
+	public void populateMetadata() {
+		for (ProcedureTemplate template : templates) {
+			//template.
 		}
-
-		public void setActs(List<Act> acts) {
-			this.acts = acts;
-		}
-
-		public String getInstructions() {
-			return instructions;
-		}
-
-		public void setInstructions(String instructions) {
-			this.instructions = instructions;
-		}
-
-		public List<ActionAttribute> getAttributes() {
-			if (attributes == null) {
-				this.attributes = new ArrayList<>();
-			}
-			return attributes;
-		}
-
-		public void setAttributes(List<ActionAttribute> attributes) {
-			this.attributes = attributes;
-		}
-		
 	}
+	
 }

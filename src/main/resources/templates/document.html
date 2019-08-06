@@ -14,37 +14,29 @@
 				<div class="container-fluid">
 					<h4><span th:utext="${document.name}"></span></h4>
 					<div>	
-						<form action="#" th:action="@{/safebusiness/addDocument}" th:object="${document}" method="post" id="sb-new-document">
-							<!-- Show Acts -->
-							<div th:if="${#lists.isEmpty(acts)}">
-								No Available Acts
-							</div>
-							<div id="" th:unless="${#lists.isEmpty(acts)}">
-								<ul class="list-group">
-								  <li class="list-group-item" th:each="act : ${acts}">
-								  	<div th:insert="fragments/viewAct.html :: viewAct"></div>
-								  </li>
-								</ul>
-					
-							</div>
-							<!-- End Acts -->
-							<hr>
-							<!-- Show Instructions -->
+						<form action="#" th:action="@{/safebusiness/updateDocument}" th:object="${document}" method="post" id="sb-new-document">
+							<input type="hidden" name="documentId" th:value="${document.id}">
+							<input type="hidden" name="process-name" th:value="${document.processName}">
 							
-							<!-- End Instructions -->
-							<div th:if="${#lists.isEmpty(attributes)}">
-								No Available attributes
-							</div>
-							<div id="" th:unless="${#lists.isEmpty(attributes)}">
-								<ul class="list-group">
-								  <li class="list-group-item" th:each="attribute, iStat : ${attributes}">
-								  	<div th:insert="fragments/attribute.html :: attribute"></div>
-								  </li>
-								</ul>
-					
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label for="firstName">First Name:</label>
+									<input id="firstName" type="text" th:field="*{clientFirstName}" placeholder="Client's first name" class="form-control" />
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="lastName">Last Name:</label>
+									<input id="lastName" type="text" th:field="*{clientLastName}" placeholder="Client's last name" class="form-control" />
+								</div>
 							</div>
 							
+							<div>
+								<ul class="list-group">
+							  		<li class="list-group-item" th:each="template : ${templates}">
+							  			<div th:insert="fragments/procedureTemplate.html :: procedureTemplate(acts=${template.acts}, attributes=${template.attributes}, instructionString=${template.instructions})"></div>
+							    	</li>
+								</ul>
 							</div>
+							<br>
 							<div class="form-row">
 								<div>
 								  <button type="button" class="btn btn-danger">Cancel</button>

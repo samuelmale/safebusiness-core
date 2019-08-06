@@ -1,0 +1,36 @@
+<!-- ProcedureTemplate fragment. Expects the params below -->
+<!-- `acts`, `attributes`, `instructionString` -->
+<div th:fragment="procedureTemplate">
+	<!-- Show Acts -->
+	<div th:if="${#lists.isEmpty(acts)}">
+		No Available Acts
+	</div>
+	<div id="" th:unless="${#lists.isEmpty(acts)}">
+		<ul class="list-group">
+		  <li class="list-group-item" th:each="act : ${acts}">
+		  	<div th:insert="fragments/viewAct.html :: viewAct"></div>
+		  </li>
+		</ul>
+
+	</div>
+	<!-- End Acts -->
+	<hr>
+	<!-- Show Instructions -->
+	<span>Instructions</span>
+	<div class="form-row">
+		<p th:utext="${instructionString}"></p>
+	</div>
+	<hr/>
+	<!-- End Instructions -->
+	<div th:if="${#lists.isEmpty(attributes)}">
+		No Available attributes
+	</div>
+	<div id="" th:unless="${#lists.isEmpty(attributes)}">
+		<ul class="list-group">
+		  <li class="list-group-item" th:each="attribute, iStat : ${attributes}">
+		  	<div th:insert="fragments/attribute.html :: attribute"></div>
+		  </li>
+		</ul>
+	</div>
+	
+</div>

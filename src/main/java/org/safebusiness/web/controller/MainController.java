@@ -1,7 +1,11 @@
 package org.safebusiness.web.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -9,12 +13,11 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.safebusiness.Act;
 import org.safebusiness.Action;
-import org.safebusiness.ActionAttribute;
 import org.safebusiness.Article;
 import org.safebusiness.AttributeType;
 import org.safebusiness.Document;
-import org.safebusiness.Document.ProcedureTemplate;
 import org.safebusiness.Procedure;
+import org.safebusiness.ProcedureTemplate;
 import org.safebusiness.Process;
 import org.safebusiness.Section;
 import org.safebusiness.api.APIUtils;
@@ -24,6 +27,7 @@ import org.safebusiness.api.repo.ActionAttributeRepository;
 import org.safebusiness.api.repo.ActionRepository;
 import org.safebusiness.api.repo.ArticleRepository;
 import org.safebusiness.api.repo.AttributeTypeRepository;
+import org.safebusiness.api.repo.DocumentRepository;
 import org.safebusiness.api.repo.ProcedureRepository;
 import org.safebusiness.api.repo.ProcessRepository;
 import org.safebusiness.api.repo.SectionRepository;
@@ -33,9 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -61,6 +67,8 @@ public class MainController {
 	Context applicationContext;
 	@Autowired
 	AttributeTypeRepository attTypeRepo;
+	@Autowired
+	DocumentRepository documentRepo;
 	
 	@GetMapping("safebusiness/index")
 	public String index(HttpSession session) {
@@ -690,26 +698,45 @@ public class MainController {
 		return "newDocument";
 	}
 	
-	// for playing around with documents
-	// TODO : Should be removed 
-	private Document doc;
-	
 	@PostMapping("safebusiness/addDocument")
 	public String addDocument(Model model, @Valid Document document) {
-		document.setupTemplates(processRepo.findByName(document.getProcessName()));
-		// Cache it somewhere for now
-		doc = document;
+		Process process = processRepo.findByName(document.getProcessName());
+		process.getDocuments().add(document);
+		//document.setupTemplates(process);
+		for (ProcedureTemplate template : document.getTemplates()) {
+			template.setDocument(document);
+		}
+		document = documentRepo.save(document);
+		return "redirect:/safebusiness/viewDocument/" + document.getId();
+	}
+	
+	@PostMapping("safebusiness/updateDocument")
+	public String updateDocument(Model model, @Valid Document document, @RequestBody MultiValueMap<String, String> formData, @RequestParam("documentId") String docId, @RequestParam("process-name") String processName) {
+		Integer id = null;
+		Process process = document.getProcessName() != null ? processRepo.findByName(document.getProcessName()) : processRepo.findByName(processName);
+		try {
+			id = Integer.parseInt(docId);
+			document.setId(id);
+			
+		} catch(NumberFormatException ex) {
+			
+		}
 		return "redirect:/safebusiness/viewDocument";
 	}
 	
-	@GetMapping("safebusiness/viewDocument")
-	public String viewDocument(Model model) {
-		List<ProcedureTemplate> templates = doc.getTemplates();
+	@GetMapping("safebusiness/viewDocument/{id}")
+	public String viewDocument(Model model, @PathVariable("id") String id) {
+		try {
+			Integer docId = Integer.parseInt(id);
+			Document doc = documentRepo.findById(docId).get();
+			List<ProcedureTemplate> templates = doc.getTemplates();
+			model.addAttribute("document", doc);
+			model.addAttribute("templates", templates);
+			
+		} catch(NumberFormatException ex) {
+		}
+		// TODO : A lot more work is required
 		
-		model.addAttribute("document", doc);
-		List<Act> acts = templates.get(0).getActs();
-		model.addAttribute("acts", acts);
-		model.addAttribute("attributes", doc.getTemplates().get(0).getAttributes());
 		return "document";
 	}
 	
@@ -718,4 +745,12 @@ public class MainController {
 	      return session.getAttribute("username") != null;
 	}
 
+	public static void printMap(Map<String, String[]> mp) {
+	    Iterator it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + pair.getValue());
+	        //it.remove(); // avoids a ConcurrentModificationException
+	    }
+	}
 }

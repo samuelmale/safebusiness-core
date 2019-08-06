@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -20,6 +21,8 @@ public class Process {
 	private String processName;
 	@OneToMany(mappedBy="process")
 	private List<Procedure> procedures;
+	@OneToMany(mappedBy="process")
+	private List<Document> documents;
 	
 	// Hacky utilities
 	@Transient
@@ -64,6 +67,15 @@ public class Process {
 	}
 	public void setProcedureNames(String procedureNames) {
 		this.procedureNames = procedureNames;
+	}
+	public List<Document> getDocuments() {
+		if (documents == null) {
+			new ArrayList<>();
+		}
+		return documents;
+	}
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}
 	
 }
