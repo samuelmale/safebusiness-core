@@ -42,7 +42,10 @@ public class Process {
 		return procedures;
 	}
 	public void setProcedures(List<Procedure> procedures) {
-		this.procedures = procedures;
+		if(this.procedures == null) {
+			this.procedures = new ArrayList<>();
+		}
+		this.procedures.addAll(procedures);
 	}
 	public Integer getId() {
 		if (id != null) {
@@ -75,7 +78,10 @@ public class Process {
 		return documents;
 	}
 	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
+		if(this.documents == null) {
+			this.documents = new ArrayList<>();
+		}
+		this.documents.addAll(documents);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package org.safebusiness;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -45,7 +46,10 @@ public class Procedure {
 		return acts;
 	}
 	public void setActs(List<Act> acts) {
-		this.acts = acts;
+		if(this.acts == null) {
+			this.acts = new ArrayList<>();
+		}
+		this.acts.addAll(acts);
 	}
 	public Action getAction() {
 		return action;

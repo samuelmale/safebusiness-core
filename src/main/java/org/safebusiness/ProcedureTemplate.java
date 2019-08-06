@@ -34,7 +34,10 @@ public class ProcedureTemplate {
 	}
 
 	public void setActs(List<Act> acts) {
-		this.acts = acts;
+		if(this.acts == null) {
+			this.acts = new ArrayList<>();
+		}
+		this.acts.addAll(acts);
 	}
 
 	public String getInstructions() {
@@ -53,7 +56,10 @@ public class ProcedureTemplate {
 	}
 
 	public void setAttributes(List<ActionAttribute> attributes) {
-		this.attributes = attributes;
+		if(this.attributes == null) {
+			this.attributes = new ArrayList<>();
+		}
+		this.attributes.addAll(attributes);
 	}
 
 	public Integer getId() {

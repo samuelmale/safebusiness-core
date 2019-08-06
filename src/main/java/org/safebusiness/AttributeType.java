@@ -65,9 +65,12 @@ public class AttributeType {
 		}
 		return dataTypes;
 	}
-
+//kin
 	public void setDataTypes(List<String> dataTypes) {
-		this.dataTypes = dataTypes;
+		if(this.dataTypes == dataTypes) {
+			this.dataTypes = new ArrayList<>();
+		}
+		this.dataTypes.addAll(dataTypes);
 	}
 
 	public String getName() {

@@ -73,7 +73,10 @@ public class Action implements Customizable<ActionAttribute> {
 	}
 
 	public void setAttributes(List<ActionAttribute> attributes) {
-		this.attributes = attributes;
+		if(this.attributes == null) {
+			this.attributes = new ArrayList<>();
+		}
+		this.attributes.addAll(attributes);
 	}
 	
 	public boolean hasAttributes() {
