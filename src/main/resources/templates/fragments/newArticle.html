@@ -4,19 +4,19 @@
 			<div class="form-group col-sm-6">
 				<label for="number">Article Number:</label>
 				
-				<input type="number" th:field="*{articleNumber}" placeholder="Article Number" class="form-control" />
+				<input type="number" name="airticlenumber" th:field="*{articleNumber}" placeholder="Article Number" class="form-control" />
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label for="article-value">Article:</label>
-				<textarea name="article-value" th:field="*{value}" placeholder="Add Article" class="form-control" rows="5"></textarea>
+				<textarea name="articlevalue" th:field="*{value}" placeholder="Add Article" class="form-control" rows="5"></textarea>
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label for="child-articles">Add child articles:</label>
-				<input type="text" id="child-articles" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child article's numbers" class="form-control" />
+				<input type="text" id="child-articles" name="childrenCommaSeparatedList" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child article's numbers" class="form-control" />
 			</div>
 		</div>
 		<div class="form-row">

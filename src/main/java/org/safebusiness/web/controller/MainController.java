@@ -166,12 +166,41 @@ public class MainController {
 	}
 	
 	@PostMapping("safebusiness/addArticle/{action}")
-	public String addArticle(@Valid Article article, @PathVariable("action") String action) {
+	public String addArticle(@Valid Article article, @PathVariable("action") String action,@RequestBody MultiValueMap<String, String> formData) {
 		try {
-			// Make updating possible
-			// TODO This has to be done to all domains supporting view modes
-			article.setId(Integer.parseInt(action));
-						
+			Integer id = Integer.parseInt(action);
+			
+			article = articleRepo.findById(id).get();
+			
+			String articleValue  = formData.getFirst("articlevalue");
+			String articleNumberString = formData.getFirst("articlenumber");
+			String childrenCommaSeparatedList  = formData.getFirst("childrenCommaSeparatedList");
+			
+			if(StringUtils.isNotBlank(articleValue)) {
+				article.setValue(articleValue);
+			}
+			if(StringUtils.isNotBlank(articleNumberString)) {
+				try {
+					Integer articleNumber = Integer.parseInt(articleNumberString);
+					article.setArticleNumber(articleNumber);
+				} catch(NumberFormatException ex){
+					
+				}
+			}
+			if(StringUtils.isNotBlank(childrenCommaSeparatedList)) {
+				List<Article> children = APIUtils.parseArticleString(childrenCommaSeparatedList, articleRepo);
+				for (Article child : children) {
+					child.setParent(article);
+				}
+				article.setChildArticles(children);
+			}	
+			
+			Article savedArticle = articleRepo.save(article);
+			if (savedArticle != null) {
+				return "redirect:article/" + savedArticle.getId();
+			}
+			
+			
 		} catch(NumberFormatException ex) {
 			// chill, stuff happens.
 		}
