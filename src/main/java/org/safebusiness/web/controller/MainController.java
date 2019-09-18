@@ -172,6 +172,8 @@ public class MainController {
 			article = articleRepo.findById(id).get();
 			String articleValue  = formData.getFirst("articlevalue");
 			String articleNumberString = formData.getFirst("articlenumber");
+			String translation = formData.getFirst("basicTranslation");
+			System.out.println("Trans: " + translation);
 			String childrenCommaSeparatedList  = formData.getFirst("childrenCommaSeparatedList");
 			
 			if (StringUtils.isNotBlank(articleValue)) {
@@ -182,6 +184,9 @@ public class MainController {
 					Integer articleNumber = Integer.parseInt(articleNumberString);
 					article.setArticleNumber(articleNumber);
 				} catch(NumberFormatException ex) {}
+			}
+			if (StringUtils.isNotBlank(translation)) {
+				article.setBasicTranslation(translation);
 			}
 			if (StringUtils.isNotBlank(childrenCommaSeparatedList)) {
 				List<Article> children = APIUtils.parseArticleString(childrenCommaSeparatedList, articleRepo);

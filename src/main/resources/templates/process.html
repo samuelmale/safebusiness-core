@@ -21,8 +21,20 @@
 							</div>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="name">Add Procedures:</label>
-									<input type="text" th:field="*{procedureNames}" placeholder="Comma delimited Procedure Names" class="form-control" />
+									<label for="name">Procedure Queue:</label>
+									<div>
+										<ul id="procedure-queue"></ul>
+									</div>
+									
+									<input type="button" value="Add Procedure" onclick="showAutocompleteDialog('add-procedure-dialog', 'procedure', 'procedure-queue', 'procedures')">
+									
+									<div id="add-procedure-dialog" class="dialog-with-autocomplete-widget" title="Add Procedure">
+										<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Procedure" />
+									</div>
+									
+									<br/>
+									
+									<input type="hidden" id="procedures" th:field="*{procedureNames}" placeholder="Comma delimited Procedure Names" class="form-control" />
 								</div>
 							</div>
 								
@@ -57,6 +69,6 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
-	
+	<script src="/js/common-utils.js"></script>
 	
 </body>

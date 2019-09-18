@@ -27,8 +27,20 @@
 							</div>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="name">Add Acts:</label>
-									<input type="text" th:field="*{actNamesString}" placeholder="Comma delimited Act Names" class="form-control" />
+									<label for="name">Acts Queue:</label>
+									<div>
+										<ul id="act-queue"></ul>
+									</div>
+									
+									<input type="button" value="Add Act" onclick="showAutocompleteDialog('add-act-dialog', 'act', 'act-queue', 'acts')">
+									
+									<div id="add-act-dialog" class="dialog-with-autocomplete-widget" title="Add Act">
+										<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Act" />
+									</div>
+									
+									<br/>
+									
+									<input type="hidden" id="acts" th:field="*{actNamesString}" placeholder="Comma delimited Act Names" class="form-control" />
 								</div>
 							</div>
 								
@@ -68,6 +80,6 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
-	
+	<script src="/js/common-utils.js"></script>
 	
 </body>

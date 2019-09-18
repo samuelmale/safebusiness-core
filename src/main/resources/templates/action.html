@@ -29,8 +29,16 @@
 							</div>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="text">Add Attribute Types:</label>
-									<input type="text" th:field="*{attributeNamesString}" placeholder="Comma delimited AttributeType Names" class="form-control" />
+									<label for="text">Attribute Types Queue:</label>
+									<div>
+										<ul id="attributes-queue"></ul>
+									</div>								
+									<input type="button" value="Add AttributeType" onclick="showAutocompleteDialog('add-attribute-dialog', 'attribute', 'attributes-queue', 'attributes')">									
+									<div id="add-attribute-dialog" class="dialog-with-autocomplete-widget" title="Add Attribute Type">
+										<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Attribute Type" />
+									</div>									
+									<br/>								
+									<input id="attributes" type="hidden" th:field="*{attributeNamesString}" placeholder="Comma delimited AttributeType Names" class="form-control" />
 								</div>
 							</div>
 							<!-- Should apply while in view mode -->
@@ -78,6 +86,6 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
-	
+	<script src="/js/common-utils.js"></script>
 	
 </body>

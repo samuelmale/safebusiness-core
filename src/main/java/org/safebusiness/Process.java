@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Process {
 
@@ -20,8 +22,10 @@ public class Process {
 	@Column
 	private String processName;
 	@OneToMany(mappedBy="process")
+	@JsonIgnore
 	private List<Procedure> procedures;
 	@OneToMany(mappedBy="process")
+	@JsonIgnore
 	private List<Document> documents;
 	
 	// Hacky utilities

@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
 public abstract class Attribute {
@@ -18,13 +19,16 @@ public abstract class Attribute {
 	private Integer id;
 	// This is a transient type, just a cache of the Datatype instance for this attribute
 	@Transient
+	@JsonIgnore
 	private Datatype dataType;
 	// The owner of the attribute
 	@Transient
+	@JsonIgnore
 	private Customizable owner;
 	// Attribute type
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="attribute_type_id_fk", nullable=true)
+	@JsonIgnore
 	private AttributeType attributeType;
 	// Attribute value
 	@Transient
@@ -36,7 +40,7 @@ public abstract class Attribute {
 	@Column(name="data_type_string")
 	private String dataTypeString;
 	// The String representation of this attribute value
-	@Column(name="value")
+	@Column(columnDefinition="text", name="value")
 	private String valueText;
 
 	///////////////////////

@@ -22,7 +22,7 @@ public class ProcedureTemplate {
 	private Integer id;
 	@Transient
 	private List<Act> acts;
-	@Column
+	@Column(columnDefinition="text")
 	private String instructions;	
 	@OneToMany(mappedBy="procedureTemplate", fetch=FetchType.EAGER)
 	private List<ActionAttribute> attributes;

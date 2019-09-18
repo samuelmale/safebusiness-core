@@ -4,15 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ActionAttribute extends Attribute {
 	
 	@Transient
+	@JsonIgnore
 	private Action action;
 	
 	@ManyToOne
 	@JoinColumn(name="procedure_template_id", nullable=true)
+	@JsonIgnore
 	private ProcedureTemplate procedureTemplate;
 	
 	public Action getAction() {

@@ -13,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Type;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Article {
 	
@@ -20,16 +23,21 @@ public class Article {
 	@GeneratedValue
 	@Column(name="article_id")
 	private Integer id;
-	@Column
+	@Column(columnDefinition="text")
 	private String value;
+	@Column(columnDefinition="text")
+	private String basicTranslation;
 	@OneToMany(mappedBy="parent", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Article> childArticles;
 	@ManyToOne
     @JoinColumn(name="parent_id_fk")
+	@JsonIgnore
 	private Article parent;
 	// Section where this article falls
 	@ManyToOne
     @JoinColumn(name="section_id_pk")
+	@JsonIgnore
 	private Section section;
 	@Column(unique=true)
 	private Integer articleNumber;
@@ -60,6 +68,14 @@ public class Article {
 		this.value = value;
 	}
 	
+	public String getBasicTranslation() {
+		return basicTranslation;
+	}
+
+	public void setBasicTranslation(String basicTranslation) {
+		this.basicTranslation = basicTranslation;
+	}
+
 	public List<Article> getChildArticles() {
 		return childArticles;
 	}

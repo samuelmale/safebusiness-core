@@ -1,4 +1,7 @@
 <div th:fragment="viewArticle">
 		<h6>Article : <span th:utext="${_article.articleNumber}"></span></h6>
 		<p th:utext="${_article.value}"></p>
+		<p><span>Basic Translation:</span><br>
+			<span th:utext="${_article.basicTranslation}">Not provided</span>
+		</p>
 </div>

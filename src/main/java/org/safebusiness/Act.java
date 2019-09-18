@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Act {
@@ -21,12 +22,14 @@ public class Act {
 	@Column(name="act_id")
 	private Integer id;
 	@OneToMany(mappedBy="act", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Section> sections;
 	@Column
 	private String name;
 	// Procedure owning this Act
 	@ManyToOne
     @JoinColumn(name="procedure_id_pk", nullable=true)
+	@JsonIgnore
 	private Procedure procedure;
 	@Column
 	private String stringId;

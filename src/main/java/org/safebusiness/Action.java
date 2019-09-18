@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.JoinColumn;
 
 @Entity
@@ -22,22 +23,22 @@ public class Action implements Customizable<ActionAttribute> {
 	@GeneratedValue
 	@Column(name="action_id")
 	private Integer id;
-//	@ElementCollection
-//	@CollectionTable(name="Instructions", joinColumns=@JoinColumn(name="action_id"))
-//	@Column(name="instructions")
 	@Transient // As for now
+	@JsonIgnore
 	private List<String> instructions;
 	@Transient
-	//@OneToMany(mappedBy="action")
+	@JsonIgnore
 	private List<ActionAttribute> attributes;
 	@OneToMany(mappedBy="action")
+	@JsonIgnore
 	private List<AttributeType> attributeTypes;
 	// Procedure owning this Action
 	@OneToOne
 	@JoinColumn(name="procedure_id", nullable=true)
+	@JsonIgnore
 	private Procedure procedure;
 	// As for now
-	@Column
+	@Column(columnDefinition="text")
 	private String instructionString;
 	
 	// This a hack around having this @id in String format

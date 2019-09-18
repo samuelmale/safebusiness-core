@@ -7,23 +7,43 @@
 				<input type="text" th:field="*{name}" placeholder="Section Name" class="form-control" />
 			</div>
 		</div>
+		
 		<div class="form-row">
 			<div class="form-group col-sm-6">
-				<label for="actid">ActID:</label>
+				<label for="child-sections">Child Section Queue:</label>
 				
-				<input type="number" th:field="*{actId}" placeholder="ActID" class="form-control" />
+				<div>
+					<ul id="child-section-queue"></ul>
+				</div>
+				
+				<input type="button" value="Add Child Section" onclick="showAutocompleteDialog('add-child-sec-dialog', 'section', 'child-section-queue', 'child-sectionss')">
+				
+				<div id="add-child-sec-dialog" class="dialog-with-autocomplete-widget" title="Add Child Section">
+					<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Child section" />
+				</div>
+				
+				<br/>
+									
+				<input type="hidden" id="child-sectionss" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child section's names" class="form-control" />
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="form-group col-sm-6">
-				<label for="child-sections">Add child sections:</label>
-				<input type="text" id="child-sectionss" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child section's names" class="form-control" />
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="form-group col-sm-6">
-				<label for="child-sections">Add Articles:</label>
-				<input type="text"  th:field="*{articleCommaSeparatedList}" placeholder="Comma seperated list of articles numbers" class="form-control" />
+				<label for="child-sections">Article Queue:</label>
+				
+				<div>
+					<ul id="article-queue"></ul>
+				</div>
+				
+				<input type="button" value="Add Article" onclick="showAutocompleteDialog('add-article-dialog', 'article', 'article-queue', 'articles')">
+				
+				<div id="add-article-dialog" class="dialog-with-autocomplete-widget" title="Add Article">
+					<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Article" />
+				</div>
+				
+				<br/>
+				
+				<input type="hidden"  id="articles" th:field="*{articleCommaSeparatedList}" placeholder="Comma seperated list of articles numbers" class="form-control" />
 			</div>
 		</div>
 		<div class="form-row" th:if="${inViewMode} == true">
@@ -54,4 +74,5 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
+	<script src="/js/common-utils.js"></script>
 </div>

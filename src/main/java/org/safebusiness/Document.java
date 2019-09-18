@@ -123,7 +123,12 @@ public class Document {
 		}
 		for (Procedure procedure : procedures) {
 			ProcedureTemplate template = new ProcedureTemplate();
-			template.setInstructions(procedure.getAction().getInstructionString());
+			Action action = procedure.getAction();
+			if (action == null) {
+				throw new IllegalArgumentException("Procedure identified by(" + procedure.getName() + ") has no Action, "
+						+ "first add one and then retry creating the Ducument");
+			}
+			template.setInstructions(action.getInstructionString());
 			template = templateRepo.save(template);
 			List<Act> acts = procedure.getActs();
 			if (acts != null) {

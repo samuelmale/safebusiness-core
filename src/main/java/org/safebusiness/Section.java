@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Section {
@@ -28,16 +29,20 @@ public class Section {
 	 * Captures the {@code content}
 	 */
 	@OneToMany(mappedBy="section", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Article> articles;
 	@OneToMany(mappedBy="parent", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Section> subSections;
 	// If this is a sub section, this is the Parent reference to the super section
 	@ManyToOne
     @JoinColumn(name="parent_id_fk", nullable=true)
+	@JsonIgnore
 	private Section parent;
 	// The Act owning this section
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="act_id_fk", nullable=true)
+	@JsonIgnore
 	private Act act;
 	
 	//This a hack around having this @id in String format

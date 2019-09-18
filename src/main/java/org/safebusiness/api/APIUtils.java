@@ -159,15 +159,13 @@ public class APIUtils {
 		List<Article> ret = new ArrayList<>();
 		List<Article> existingArticles = careFullyCastIterableToList(articleRepo.findAll());
 		for(Integer num : parseStringToIntegerList(val)) {
-			for (Article candidate : existingArticles) {
-				if (candidate.getArticleNumber() == num) {
+			for (Article candidate : existingArticles) {				
+				if (candidate.getArticleNumber().equals(num)) {
 					ret.add(candidate);
 					break;
-				}
-				
+				}				
 			}
 		}
-
 		return ret;	
 	}
 

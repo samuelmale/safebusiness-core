@@ -22,11 +22,25 @@
 							
 							<div class="form-row">
 								<div class="form-group col-sm-6">
-									<label for="name">Add Sections:</label>
-									<input type="text" th:field="*{sectionListString}" placeholder="Comma delimitted Section Names" class="form-control" />
+									<label for="name">Section Queue:</label>
+									
+									<div>
+										<ul id="section-queue"></ul>
+									</div>
+									
+									<input type="button" value="Add Section" onclick="showAutocompleteDialog('dialog-sec', 'section', 'section-queue', 'section-list-items')">
+									
+									<div id="dialog-sec" class="dialog-with-autocomplete-widget" title="Add Section">
+										<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup section" />
+									</div>
+									
+									<br/>
+									<input id="section-list-items" type="hidden" th:field="*{sectionListString}" placeholder="Comma delimitted Section Names" class="form-control" />
+									<br>
+									
 								</div>
 							</div>
-								
+						
 							<div th:if="${inViewMode} == true">
 								<h6>Sections:</h6>
 								<div th:insert="fragments/listSections.html :: listsections"></div>
@@ -35,7 +49,7 @@
 							<div class="form-row">
 								<div>
 								 <button id="sb-cancel" type="button" class="btn btn-danger">Cancel</button>
-								  <button id="sb-submit" type="button" class="btn btn-success">Save</button>
+								 <button id="sb-submit" type="button" class="btn btn-success">Save</button>
 								</div>
 				
 							</div>
@@ -57,6 +71,5 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
-	
-	
+	<script src="/js/common-utils.js"></script>
 </body>

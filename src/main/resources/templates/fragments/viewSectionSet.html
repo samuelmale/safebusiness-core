@@ -4,6 +4,7 @@
 			<h5>Section[<span th:utext="${section.name}"></span>]</h5>
 			<div th:if="${#lists.isEmpty(section.articles)}">
 				No Articles Found.
+				<br/>
 			</div>
 			<div th:unless="${#lists.isEmpty(section.articles)}">
 				<div th:insert="fragments/viewArticleSet.html :: viewArticleSet(articles=${section.articles})"></div>

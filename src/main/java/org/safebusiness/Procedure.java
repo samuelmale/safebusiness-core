@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity(name = "safebusiness_procedure")
 public class Procedure {
 	
@@ -23,12 +25,14 @@ public class Procedure {
 	@Column(name="procedure_id")
 	private Integer id;
 	@OneToMany(mappedBy="procedure", fetch=FetchType.EAGER)
+	@JsonIgnore
     private List<Act> acts;
 	@OneToOne(mappedBy="procedure")
 	private Action action;
 	// Process owning this Procedure
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="process_id_pk", nullable=true)
+	@JsonIgnore
 	private Process process;
 	@Column(unique=true)
 	private String name;

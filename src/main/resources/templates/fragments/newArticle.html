@@ -15,8 +15,27 @@
 		</div>
 		<div class="form-row">
 			<div class="form-group col-sm-6">
-				<label for="child-articles">Add child articles:</label>
-				<input type="text" id="child-articles" name="childrenCommaSeparatedList" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child article's numbers" class="form-control" />
+				<label for="article-translation">Basic Article Translation:</label>
+				<textarea name="basicTranslation" th:field="*{basicTranslation}" placeholder="Add Translation" class="form-control" rows="5"></textarea>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label for="child-articles">Child Article Queue:</label>
+				
+				<div>
+					<ul id="child-article-queue"></ul>
+				</div>
+				
+				<input type="button" value="Add Child Article" onclick="showAutocompleteDialog('add-article-dialog', 'article', 'child-article-queue', 'child-articles')">
+				
+				<div id="add-article-dialog" class="dialog-with-autocomplete-widget" title="Add Child Article">
+					<input id="autocomplete" class="autocomplete" type="text" placeholder="Lookup Article" />
+				</div>
+				
+				<br/>
+				
+				<input type="hidden" id="child-articles" name="childrenCommaSeparatedList" th:field="*{childrenCommaSeparatedList}" placeholder="Comma seperated list of child article's numbers" class="form-control" />
 			</div>
 		</div>
 		<div class="form-row">
@@ -35,4 +54,5 @@
 			window.location.href='/safebusiness/index';
 		});
 	</script>
+	<script src="/js/common-utils.js"></script>
 </div>

@@ -1,0 +1,12 @@
+/*#
+* Disable the close button of the jQuery dialog
+*/
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+  
+}
+
+.dialog-theme .ui-dialog-titlebar {
+	background: #4e73df;
+	color: white;
+}
