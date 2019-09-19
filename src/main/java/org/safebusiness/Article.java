@@ -23,7 +23,7 @@ public class Article {
 	@GeneratedValue
 	@Column(name="article_id")
 	private Integer id;
-	@Column(columnDefinition="text")
+	@Column(columnDefinition="LONGVARBINARY")
 	private String value;
 	@Column(columnDefinition="text")
 	private String basicTranslation;
